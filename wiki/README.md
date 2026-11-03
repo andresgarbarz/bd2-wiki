@@ -48,7 +48,7 @@ Esta es la puerta de entrada al conocimiento curado. Cada afirmación importante
 - [Ejercicios tipo parcial](../practica/parcial/README.md) y su [incorporación](../material/incorporaciones/2026-10-13-ejercicios-parcial.md)
 - [Claves, consistencia y Bloom filters: figuras](../material/figuras/README.md)
 - [Mecanismo DIGEST de cátedra](../material/catedra/teoria/recursos/c05-cassandra-digest.png)
-- [TPO FarmaRed](../entregas/tpo-farmared/README.md) y su [incorporación](../material/incorporaciones/2026-11-03-neo4j-redis-dynamodb-tpo.md)
+- [TPO FarmaRed](../entregas/tpo-farmared/README.md), las [decisiones de arquitectura](../entregas/decisiones-arquitectura.md) y su [incorporación](../material/incorporaciones/2026-11-03-neo4j-redis-dynamodb-tpo.md)
 
 ## Cobertura actual
 
@@ -80,4 +80,4 @@ Esta es la puerta de entrada al conocimiento curado. Cada afirmación importante
 | Neo4j: grafos de propiedad, Cypher, HA y Causal Clustering | T17, C06, P15 | Curado; HA y Raft conviven como arquitecturas distintas; CAP de T17 y T19 sin unificar |
 | Redis y clave-valor | T18, T19, P16, P16A | Curado; P16A no resuelve la guía; tabla IMDB recuperada de la página |
 | DynamoDB | T20, P17 | Curado; el servicio no recibe etiqueta CAP en T20; la guía visual clasifica al paper Dynamo |
-| TPO FarmaRed | P18 | Consigna indexada; CSV en el repositorio del grupo; grupos de 4 y “tres integrantes” sin resolver |
+| TPO FarmaRed | P18 | Motores decididos: MongoDB y Neo4j. Falta el modelo físico. Grupos de 4 y “tres integrantes” sin resolver |
