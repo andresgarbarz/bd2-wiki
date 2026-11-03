@@ -11,6 +11,6 @@
 | SQL | Investigadores (vistas), mensajería, nulos en agregados, corrección de joins | [consultas](../../wiki/temas/05-consultas-sql.md), [nulos](../../wiki/temas/06-nulos-y-logica-trivaluada.md), [vistas](../../wiki/temas/09-vistas.md) |
 | Teoría | SGBD, DER, jerarquías, entidad débil | [SGBD](../../wiki/temas/01-introduccion-sgbd.md), [MER](../../wiki/temas/02-modelo-entidad-relacion.md), [derivación](../../wiki/temas/03-modelo-relacional-y-ddl.md) |
 | Seguridad | Roles y privilegios | [seguridad](../../wiki/temas/13-seguridad-y-transacciones.md), [TP 8](../tp-08/solucion.md) |
-| NoSQL | MongoDB, Neo4j, Cassandra y adicionales | [MongoDB](../../wiki/temas/17-mongodb-consultas-y-crud.md), [Cassandra](../../wiki/temas/20-cassandra-modelado-y-cql.md), [TP 9](../tp-09/solucion.md), [TP 10](../tp-10/solucion.md) |
+| NoSQL | MongoDB, Neo4j, Cassandra y adicionales | [MongoDB](../../wiki/temas/17-mongodb-consultas-y-crud.md), [Neo4j](../../wiki/temas/23-neo4j-grafos-y-cypher.md), [Cassandra](../../wiki/temas/20-cassandra-modelado-y-cql.md), [TP 9](../tp-09/solucion.md), [TP 10](../tp-10/solucion.md) |
 
 Supuestos y vacíos del enunciado: [dudas y conflictos](../../wiki/dudas-y-conflictos.md#ejercicios-tipo-parcial-p14). [P14, pp. 1–7]

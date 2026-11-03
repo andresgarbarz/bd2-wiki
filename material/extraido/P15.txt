@@ -1,0 +1,122 @@
+FUENTE: P15
+TITULO: TP 11 — Neo4j
+ORIGINAL: material/catedra/practica/tp-11-neo4j.pdf
+
+===== PAGINA 1 =====
+
+                                                                                                     1
+Base de Datos II - TP 11​
+
+
+
+                                        TP N°11 - Neo4j
+
+Esta práctica se basa en el libro “Seven Databases in Seven Weeks (2nd Edition)” de Luc
+Perkins.
+Cabe aclarar que el libro tiene su antigüedad, por lo cual algunos de los métodos especificados
+quedaron deprecados.
+
+Antes de comenzar es necesario utilizar dockers/contenedores:
+   ●​ Instalar Docker Desktop for Windows o for Mac o Docker Engine en Linux
+   ●​ Para descargar la versión oficial de Neo4j ejecutar: docker pull neo4j
+   ●​ Levantar el contenedor con: docker run --name Myneo4j -p 7474:7474 -p 7687:7687
+       --env=NEO4J_AUTH=none -d neo4j
+   ●​ Para apagar el contenedor ejecutar: docker stop Myneo4j
+   ●​ Para iniciarla nuevamente ejecutar: docker start Myneo4j
+   ●​ Para listar todos los contenedores existentes ejecutar: docker ps –a
+
+Otra opción es instalar Neo4j en la PC que vayan a utilizar para este práctico: Linux installation -
+Operations Manual
+
+Abrir un web browser para acceder a la interfaz Web de Neo4j: http://localhost:7474/browser
+   ●​ Eliminar el usuario y dejar en blanco el campo password (ya que configuramos el
+       contenedor con No Authentication como Authentication type)
+
+Para acceder a la línea de comandos dentro del contenedor: docker exec -it Myneo4j bash
+
+
+Ejercicios:
+
+    1)​ Capítulo 6, páginas 181 a 188
+           a)​ Crear los nodos relacionados con los vinos planteados en el libro para acostumbrarse
+               a la interfaz y a la sintaxis de Cypher.
+           b)​ En el caso de que se hayan creado relaciones de más, eliminarlas para lograr el
+               mismo grafo que se muestra en la página 185.
+           c)​ Crear los nodos relacionados con las personas y sus gustos para lograr el mismo
+               grafo que se muestra en la página 186.
+           d)​ Realizar las consultas como se indica en las páginas 185, 186 y 187.
+           e)​ Crear el índice y la restricción de unicidad como se indica en las páginas 187 y 188.
+
+    2)​ Capítulo 6, página 189
+            a)​ Hacer el ejercicio Find.2 allí mencionado (para acceder al ejemplo el comando
+                ahora es :play movies). Antes, borrar todos los nodos creados anteriormente para
+                empezar con la base limpia. Llegar hasta el paso 7 del tutorial
+            b)​ Antes de borrar los datos del tutorial de películas (paso 8), responder las siguientes
+                preguntas:
+                    ○​ ¿Cuántos nodos hay en la base?
+                    ○​ Consultando los nodos: ¿qué etiquetas tienen y cuántos nodos están
+                       caracterizados por dicha etiqueta?
+                    ○​ ¿Qué tipos de relaciones existen?
+            c)​ Hacer el ejercicio Do.1 allí mencionado.
+
+                                              ITBA - 2026
+
+===== PAGINA 2 =====
+
+                                                                                                 2
+Base de Datos II - TP 11​
+
+
+    3)​ Ahora vamos a representar ciudades como nodos:
+           a)​ Crear 2 nodos que representen una localidad cada uno (ej: CABA y Mar del Plata).
+               Para estos 2 nodos, registrar su longitud y latitud (pueden consultarla en Google
+               Maps)
+           b)​ Crear la relación “hay_ruta” entre ambos
+           c)​ Calcular automáticamente la distancia entre ambas ciudades y guardarla en un
+               atributo de la relación entre ambos
+
+
+Para responder las siguientes preguntas vamos a utilizar un servicio de sandbox de Neo4j:
+https://sandbox.neo4j.com/
+    ●​ Seleccionar en la sección de “Pre Built Data” → “Paradise Papers by ICIJ” (la última
+         opción). Luego hacer clic en “Create and Download Credentials”
+    ●​ Acceder a la base desde la interfaz web (primer opción: Open with browser), logueándose
+         con autenticación Single Sign On (SSO) / Connect with Sanbox Login, y luego seguir los
+         pasos del tutorial para entender el contexto de los datos (si no se abre la ventana a la
+         izquierda,                    entonces                   ejecutar                  :play
+         https://guides.neo4j.com/sandbox/icij-paradise-papers/index.html)
+
+Nota: Este ejercicio no tiene ninguna connotación política, simplemente queremos mostrar un uso
+  real de Neo4j.
+
+    4)​ Respondan a las siguientes preguntas (usando Cypher desde la interfaz Web):
+           a)​ ¿Cómo es el esquema de nodos que tiene la base?
+           b)​ ¿Cuántos nodos hay en la base?
+           c)​ Consultando los nodos: ¿qué etiquetas tienen y cuántos nodos están caracterizados
+               por dicha etiqueta?
+           d)​ ¿Qué tipos de relaciones existen?
+           e)​ Encuentren a Hutomo Mandala en la base de datos (Hint: pueden usar el operador
+               CONTAINS para buscar un substring en name) y recuperen las relaciones que están
+               registradas en la base
+                     ●​¿Está relacionado con alguna Entidad (nodo Entity)? ¿Con cuál?
+                     ●​Recuperen las relaciones de primer y segundo grado que tiene dicha entidad.
+                       Validar el resultado, navegando a través del nodo de Hutomo Mandala
+           f)​ Miremos ahora los datos correspondientes a Saadi Yacef. ¿Con cuántos funcionarios
+               (nodo Officer) y/o entidades (nodo Entity) se encuentra relacionado en 1er grado?
+               ¿Y en 2do? ¿Y en 3ero?
+
+
+    5)​ Resuma las fortalezas y debilidades de Neo4j. ¿En qué situaciones utilizarían esta base de
+        datos?
+
+    6)​ Clasifique Neo4j según el Teorema CAP
+
+
+
+Lectura auxiliar:
+Graph Database Use Cases & Solutions
+An In-Depth Graph Analysis of the Paradise Papers
+
+
+
+                                            ITBA - 2026

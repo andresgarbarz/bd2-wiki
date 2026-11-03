@@ -1,0 +1,110 @@
+FUENTE: P16
+TITULO: TP 12 — Redis
+ORIGINAL: material/catedra/practica/tp-12-redis.pdf
+
+===== PAGINA 1 =====
+
+Base de Datos II - TP 12​
+
+
+
+
+                                         TP N°12 – Redis
+
+Esta práctica se basa en el libro “Seven Databases in Seven Weeks (2nd Edition)” de Luc
+Perkins.
+
+Antes de comenzar es necesario utilizar dockers/contenedores:
+   ●​ Instalar Docker Desktop for Windows o for Mac o Docker Engine en Linux
+   ●​ Para descargar la versión oficial de Redis ejecutar: docker pull redis
+   ●​ Levantar el contenedor con: docker run --name Myredis -p 6379:6379 -d redis
+   ●​ Para apagar el contenedor ejecutar: docker stop Myredis
+   ●​ Para iniciarla nuevamente ejecutar: docker start Myredis
+   ●​ Para listar todos los contenedores existentes ejecutar: docker ps –a
+
+Otra opción es instalar la última versión disponible de Redis Open Source en la PC que vayan a
+utilizar para este práctico: Downloads | Redis
+
+Para acceder a la línea de comandos dentro del contenedor: docker exec -it Myredis bash
+Luego acceder al cliente de Redis ejecutando: redis-cli
+
+
+Ejercicios:
+
+Realicen los siguientes ejercicios:
+
+    1)​ Primero completen la siguiente tabla con los operadores disponibles en Redis y verifiquen el
+        funcionamiento de cada uno (pueden consultar la lista de comandos de la documentación
+        oficial de Redis: Commands | Docs):
+
+                               Lectura       Inserción        Modificación          Borrado
+   Tipos de datos           GET/MGET      SET/MSET
+   Simples
+   (integer, string)
+   Hashes
+   Lists
+   Blocking lists
+   Sets                                                  No aplica
+   Sorted Sets
+        Se han colocado algunos operadores a modo de ejemplo.
+
+
+    2)​ Capítulo 8, página 262
+            a)​ Comprobar el funcionamiento de las transacciones en Redis (previamente ejecutar
+                los comandos SET/GET de las páginas 261 y 262)
+            b)​ ¿Qué diferencia encuentran entre el ROLLBACK de PostgreSQL y el DISCARD de
+                Redis?
+
+
+
+
+                                             ITBA - 2026
+
+===== PAGINA 2 =====
+
+Base de Datos II - TP 12​
+
+
+
+
+    3)​ Capítulo 8, página 271 y 272
+            a)​ ¿Cuál es la funcionalidad de Redis que le permite ser usada como caché de acceso
+                rápido? Probar su funcionamiento
+
+
+    4)​ Capítulo 8, páginas 285 a 288
+           a)​ Comprobar el funcionamiento de la implementación de Bloom filter en Redis, con
+               los comandos SETBIT y GETBIT (página 287 y 288). Previamente leer la teoría de
+               las páginas 285 y 286 para entender su finalidad
+
+
+    5)​ Capítulo 8, página 289
+            a)​ Hacer el ejercicio Find.2 allí mencionado. Ver el siguiente link: High availability
+                with Redis Sentinel | Docs
+
+
+    6)​ Cargue las siguientes películas y su score en IMDB en Redis, utilizando la estructura más
+        conveniente para responder las preguntas posteriores:
+
+
+
+
+          Luego, ejecute los comandos que permitan obtener los siguientes resultados:
+             a)​ Todas las películas en orden ascendente de acuerdo al score
+             b)​ Películas cuyo puntaje se encuentra entre 8 y 10 (incluyendo los extremos)
+             c)​ Películas que tengan un puntaje menor que 8
+             d)​ Las dos mejores películas junto a su puntaje
+             e)​ ¿En qué posición se encuentra la película ‘The Imitation Game’? Responder en
+                 forma decreciente y creciente según el score
+
+
+    7)​ Resuma las fortalezas y debilidades de Redis. ¿En qué situaciones utilizarían esta base de
+        datos?
+
+
+    8)​ Clasifique Redis según el Teorema CAP
+
+
+
+
+                                            ITBA - 2026

@@ -1,0 +1,278 @@
+FUENTE: C06
+TITULO: Anexo Neo4j: MERGE, Causal Clustering y Raft
+ORIGINAL: material/catedra/teoria/c06-neo4j-merge-causal-clustering.pdf
+
+===== PAGINA 1 =====
+
+MERGE + Causal Clustering + Raft
+
+Construcción de grafos, consenso distribuido y consistencia causal
+
+
+
+
+  Objetivos
+
+  Comprender MERGE, explicar cómo se confirma una transacción y analizar fallas en un clúster.
+
+===== PAGINA 2 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+CREATE, MATCH y MERGE
+
+    CREATE                          MATCH                        MERGE
+
+    Siempre crea un patrón nuevo.   Busca patrones existentes.   Busca el patrón completo; si no
+                                                                 existe, lo crea.
+
+
+
+
+       CREATE (p:Persona {nombre:'Ana'})
+       MATCH (p:Persona {nombre:'Ana'})
+       MERGE (p:Persona {nombre:'Ana'})
+
+===== PAGINA 3 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+MERGE: comportamiento y propiedades
+
+
+     MERGE (p:Persona {id: 101})
+     ON CREATE SET p.nombre = 'Ana', p.alta = date()
+     ON MATCH SET p.ultimoAcceso = datetime()
+     RETURN p
+
+
+
+    • ON CREATE SET se ejecuta únicamente si se crea el patrón.
+
+    • ON MATCH SET se ejecuta cuando el patrón ya existe.
+
+    • SET fuera de esas cláusulas se ejecuta en ambos casos.
+
+===== PAGINA 4 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+MERGE de relaciones: práctica recomendada
+
+
+                                                    CONOCE
+                    Ana                                                                      Pedro
+
+
+
+
+       MERGE (a:Persona {id: 1})
+       MERGE (b:Persona {id: 2})
+       MERGE (a)-[:CONOCE]->(b)
+
+
+    Primero resolver los nodos; después la relación. MERGE opera sobre el patrón completo.
+
+===== PAGINA 5 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+MERGE no reemplaza las restricciones
+
+     CREATE CONSTRAINT persona_id_unico IF NOT EXISTS
+     FOR (p:Persona) REQUIRE p.id IS UNIQUE;
+
+     MERGE (p:Persona {id: 101})
+     SET p.nombre = 'Ana';
+
+
+
+
+    • MERGE no elimina duplicados preexistentes.
+
+    • Concurrencia: usar una clave única y su restricción.
+
+    • Conviene evitar usar propiedades cambiantes como identidad.
+
+===== PAGINA 6 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+Causal Clustering: arquitectura
+
+
+   Primary A                                         Primary B                                Primary C
+
+   Leader Raft                                       Follower Raft                            Follower Raft
+
+
+
+
+                        Secondary D                                   Secondary E
+
+                        Réplica de lectura; no vota en Raft.          Réplica de lectura; replicación
+                                                                      asíncrona.
+
+
+      Primarios: consenso y escrituras · Secundarios: escalado de lecturas
+
+===== PAGINA 7 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+Raft: roles y elección de líder
+
+    Leader                                Follower                            Candidate
+
+    Coordina el log de consenso de        Replica entradas y participa en     Solicita votos al comenzar una
+    una base de datos.                    votaciones.                         elección.
+
+
+
+
+    • Si falla el líder, los miembros restantes pueden elegir otro.
+
+    • Se requiere mayoría de votantes para elegir y confirmar.
+
+    • Raft coordina el orden de transacciones, no las lecturas secundarias.
+
+===== PAGINA 8 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+Raft: ¿cómo se confirma una escritura?
+
+   1                               2                                    3
+
+   El cliente envía la escritura   El líder agrega una entrada al log   Replica la entrada a los followers
+
+
+
+
+   4                               5
+
+   La mayoría confirma recepción   La entrada se compromete y se
+                                   aplica
+
+===== PAGINA 9 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+Quórum y tolerancia a fallas
+
+
+        3 primarios                            5 primarios                    7 primarios
+
+        Quórum: 2                              Quórum: 3                      Quórum: 4
+        Fallas toleradas: 1                    Fallas toleradas: 2            Fallas toleradas: 3
+
+
+
+
+        Regla para tolerar F fallas: N ≥ 2F + 1
+
+        Sin mayoría, no pueden confirmarse nuevas escrituras mediante Raft.
+
+===== PAGINA 10 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+¿Por qué causal? Bookmarks
+
+    Transacción T1                      Bookmark                            Transacción T2
+
+    CREATE (:Persona {id:101})          El cliente conserva el punto de     La lectura espera una réplica
+                                        progreso de T1.                     suficientemente actualizada.
+
+
+
+
+    • Evita que una lectura causalmente dependiente observe un estado anterior.
+
+    • Los secundarios pueden presentar retraso de replicación.
+
+    • Se consigue la propiedad Read Your Own Writes.
+
+===== PAGINA 11 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+Comparación: Neo4j y Cassandra
+
+    Neo4j (clúster)                                      Cassandra (operación habitual)
+
+    Primarios con Raft; consenso con mayoría;            Arquitectura sin líder único de escritura; niveles de
+    secundarios para lecturas; bookmarks para            consistencia configurables; replicación entre nodos.
+    causalidad.
+
+
+
+
+    Cassandra usa mecanismos adicionales de consenso en operaciones específicas (por ejemplo, LWT).
+
+===== PAGINA 12 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+Actividad para discutir en clase
+
+  • Tenemos 3 primarios y 2 secundarios. Falla el líder: ¿qué sucede?
+
+
+  • Luego falla otro primario: ¿pueden confirmarse escrituras?
+
+
+  • Un cliente escribe y lee desde un secundario: ¿qué riesgo existe?
+
+
+  • ¿Cómo ayuda un bookmark? ¿Y una restricción UNIQUE con MERGE?
+
+
+
+
+                                                                        12
+
+===== PAGINA 13 =====
+
+NEO4J · BASES DE DATOS II
+
+
+
+Guía de respuestas y cierre
+
+  • Con 2 de 3 primarios activos, puede elegirse nuevo líder y mantener quórum.
+
+  • Con solo 1 de 3 primarios, no hay mayoría para nuevas escrituras.
+
+  • Un secundario puede ir atrasado; bookmarks permiten esperar el progreso causal.
+
+  • MERGE busca o crea patrones; UNIQUE protege la identidad ante concurrencia.
+
+  • Raft = consenso; Causal Clustering = arquitectura distribuida.
+
+
+
+
+                                                                                      13

@@ -19,7 +19,7 @@ La [figura de la unidad](../../material/figuras/T13-p9-escalabilidad-vertical-ho
 | Familias de columnas | Organización por familias/columnas, presentada mediante un contraste visual con filas. | Cassandra, HBase |
 | Grafos | Nodos y relaciones entre ellos; el ejemplo representa personas, mensajes y vínculos. | Neo4j |
 
-La clasificación y los ejemplos provienen de la [taxonomía visual](../../material/figuras/T13-p21-taxonomia-nosql.png). Continuar con [modelado y CQL de Cassandra](20-cassandra-modelado-y-cql.md) y [replicación y consistencia](22-cassandra-consistencia-y-digest.md): la nueva unidad desarrolla las claves y el nivel de consistencia configurable por operación. [T13, pp. 21–27; T16, pp. 16, 44–46, 63–69]
+La clasificación y los ejemplos provienen de la [taxonomía visual](../../material/figuras/T13-p21-taxonomia-nosql.png). Cassandra se desarrolla en [modelado y CQL](20-cassandra-modelado-y-cql.md) y [replicación y consistencia](22-cassandra-consistencia-y-digest.md). Neo4j, Redis y DynamoDB tienen apuntes propios: [grafos y Cypher](23-neo4j-grafos-y-cypher.md), [clave-valor](24-redis-clave-valor.md) y [DynamoDB](25-dynamodb.md). [T13, pp. 21–27; T16, pp. 16, 44–46, 63–69; T17; T18; T20]
 
 ## CAP: lectura de cátedra
 
@@ -28,6 +28,8 @@ La presentación introduce tres propiedades: **consistencia** de los datos obser
 El [gráfico de clasificación](../../material/figuras/T13-p18-clasificacion-cap.png), revisado visualmente, ubica MongoDB en CP, Cassandra en AP y MySQL/PostgreSQL en CA. Esta es la clasificación didáctica de esa diapositiva y la referencia para la pregunta 8 del TP 9, parte II. [T13, p. 18; P10B, p. 2]
 
 El ejercicio 3 del TP 10, parte II, pide clasificar Cassandra. Además del gráfico de T13, la clase de Cassandra la describe como tolerante a particiones y disponible a cambio de consistencia eventual, y aclara que el nivel de consistencia se configura incluso por consulta. Ese ajuste se desarrolla en [replicación y consistencia](22-cassandra-consistencia-y-digest.md). [T13, p. 18; T16, p. 11; P13, p. 2]
+
+Las unidades de Neo4j, Redis y DynamoDB no repiten una sola etiqueta. T17 clasifica Neo4j HA como AP; T19 clasifica Redis y Neo4j como CA; la [guía visual](../../material/figuras/T20-p31-guia-visual-cap.png) de T20 ubica Redis en CP, Cassandra en AP y el sistema Dynamo del paper de 2007 en AP. Esas diferencias están en [dudas y conflictos](../dudas-y-conflictos.md). [T17, p. 40; T19, p. 36; T20, pp. 5, 31]
 
 **Complemento del agente (no consta en el material cargado):** el compromiso de CAP se plantea ante una partición: no se pueden garantizar simultáneamente consistencia fuerte y disponibilidad para todas las peticiones. Fuera de esa situación, la regla “elegir dos” oculta posibilidades del diseño. CAP usa consistencia de una copia única, distinta de la preservación de restricciones de la C de ACID; su disponibilidad tampoco es simplemente un porcentaje de uptime. Véanse [Brewer, CAP Twelve Years Later](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/) y [Gilbert y Lynch, Perspectives on the CAP Theorem, sección 2](https://groups.csail.mit.edu/tds/papers/Gilbert/Brewer2.pdf).
 
@@ -45,3 +47,6 @@ La [figura BASE](../../material/figuras/T13-p19-base.png) desarrolla **Basically
 - [Consultas y CRUD](17-mongodb-consultas-y-crud.md).
 - [Agregaciones y vistas](18-mongodb-agregaciones-y-vistas.md).
 - [Replicación y sharding](19-mongodb-replicacion-y-sharding.md).
+- [Neo4j: grafos y Cypher](23-neo4j-grafos-y-cypher.md).
+- [Redis y clave-valor](24-redis-clave-valor.md).
+- [DynamoDB](25-dynamodb.md).

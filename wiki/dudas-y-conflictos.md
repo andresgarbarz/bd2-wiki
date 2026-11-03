@@ -267,14 +267,42 @@ Referencias externas: [release notes oficiales de MySQL 9.7](https://dev.mysql.c
 
 ## Ejercicios tipo parcial (P14)
 
-- **Neo4j sin material.** P14 pide leer una consulta Cypher, pero el material cargado solo nombra Neo4j como ejemplo de base de grafos y como caso de persistencia políglota; no enseña Cypher. [P14, p. 4; T13, pp. 21–23; C01, p. 6] Cualquier explicación de la sintaxis es complemento del agente.
+- **Consulta Cypher de P14.** Pide redactar en lenguaje natural el patrón `[:FRIENDS_WITH*2..3]` excluyendo la amistad directa. T17 ya muestra caminos de longitud variable (`[:FRIEND*..5]` dentro de `shortestPath`) y amigos de amigos. La redacción del enunciado se resuelve con ese material. [P14, p. 4; T17, pp. 13, 25–26]
 - **Mensajería: "a lo sumo 3 adjuntos".** No aclara si incluye los mensajes con **cero** adjuntos que cumplan las condiciones. Un `JOIN` con `HAVING COUNT(*) <= 3` los pierde. Además, `ADJUNTO.anio_creacion` es de tipo `date` pese a su nombre, y `tamanio` es `int` sin unidad declarada frente a "50 Mb". [P14, p. 1]
 - **Mensajería: dos caminos entre mensaje y adjunto.** `CONTIENE` registra qué adjuntos tiene cada mensaje (n:m); las columnas `tipo_mensaje`/`cod_mensaje` de `ADJUNTO` registran solo el primer mensaje en que se incluyó. "Contienen" corresponde a `CONTIENE`. [P14, p. 1]
 - **Películas: notación PostgreSQL.** La consulta califica las tablas con el esquema `unc_esq_peliculas.`; en el entorno MySQL del repositorio el esquema equivalente es la base `mydb` [SQL01]. [P14, p. 2]
-- **Decisión:** resolver con los supuestos explícitos en el [espacio de práctica](../practica/parcial/README.md) y marcar como complemento la parte de Neo4j.
+- **Decisión:** resolver con los supuestos explícitos en el [espacio de práctica](../practica/parcial/README.md). La consulta Neo4j se lee con T17; ya no hace falta marcar toda la sintaxis como complemento.
 
 ## Posición de `NULL` al ordenar
 
 - T05B afirma que, para `ORDER BY`, `NULL` es el "mayor". [T05B, p. 29]
 - Es el comportamiento de PostgreSQL. En MySQL 9.7.2 es al revés: `NULL` se ordena como el **menor** valor y sale primero en orden ascendente. Verificado: `ORDER BY x` sobre `{1, NULL, 2}` devuelve `NULL, 1, 2`. *Complemento del agente (no consta en el material cargado).*
 - **Decisión:** citar T05B para PostgreSQL y, al resolver en MySQL, no asumir la posición de los nulos: si importa, ordenar explícitamente, por ejemplo con `ORDER BY x IS NULL, x` para mandarlos al final.
+
+## CAP de Neo4j, Redis y Dynamo
+
+- T17 clasifica Neo4j HA como AP: cada slave puede responder atrasado respecto del master y el texto lo llama eventualmente consistente. T19 clasifica Redis y Neo4j como CA, porque no hacen sharding, y duda de aplicar CAP a un sistema no distribuido. [T17, p. 40; T19, p. 36]
+- La guía visual de T20 ubica Redis en CP, Cassandra y el sistema Dynamo del paper en AP, y MongoDB en CP. No rotula DynamoDB. [T20, p. 31]
+- T20 no da una etiqueta CAP del servicio DynamoDB. Del paper de 2007 resume “disponibilidad por encima de consistencia” y pregunta si DynamoDB es ese producto. [T20, p. 5]
+- **Decisión:** al clasificar, nombrar la fuente y la arquitectura (HA 3.4, instancia única, o el paper Dynamo). No completar la etiqueta que la fuente no fija. El gráfico didáctico de MongoDB CP y Cassandra AP sigue siendo el de T13. [T13, p. 18]
+
+## Neo4j HA y Causal Clustering
+
+- T17 describe master y slaves: los slaves aceptan escrituras, ZooKeeper coordina y HA replica el grafo completo. El ejemplo es Enterprise 3.4.9 con `dbms.mode=HA`. [T17, pp. 19, 36–39]
+- C06 describe primarios con Raft y secundarios de solo lectura, que no votan. Las escrituras se confirman por mayoría. Un bookmark espera una réplica actualizada. [C06, pp. 6–10]
+- T17 junta en una misma fuente la versión 1.0 de febrero de 2010, la disponibilidad pública en 2007, el desarrollo desde 2003 y la release 5.6 de marzo de 2023. [T17, pp. 1, 15]
+- **Decisión:** tratar HA y Causal Clustering como dos arquitecturas del material, no como sinónimos. No usar la configuración 3.4.9 como receta de un servidor 5.x. Las fechas quedan como las cita cada lámina.
+
+## Transacciones de Redis
+
+- T18 dice que una transacción es atómica, todos los comandos o ninguno, y en la lámina siguiente admite un registro parcial si el servidor cae durante la ejecución. También dice que no hay rollback ante un error de tipo o de sintaxis descubierto tarde. [T18, pp. 12–13]
+- T19 describe `DISCARD` como no ejecutar la cola, y lo distingue de un `ROLLBACK` que revierte estado ya aplicado. [T19, p. 7]
+- **Decisión:** explicar `MULTI`/`EXEC`/`DISCARD`/`WATCH` con ese alcance. No prometer que una caída a mitad de `EXEC` deshace lo ya escrito.
+
+## TPO FarmaRed
+
+- La carátula fija grupos de 4 integrantes. El requisito del historial de commits pide evidenciar la participación de “los tres integrantes”. [P18, pp. 1, 7]
+- **Decisión:** conservar las dos cifras. No elegir una hasta que la cátedra lo aclare.
+- Los nueve CSV de la consigna están en `material/entrada/datasets_farmared/` y se copiaron al repositorio del TPO. Los conteos coinciden con P18: 8 clientes, 5 sucursales, 7 farmacéuticos, 5 proveedores, 13 productos, 18 lotes, 9 recetas, 16 ventas y 22 detalles. [P18, pp. 1–4]
+- **Vacío:** no hay clase 19 en este lote. La secuencia recibida salta de la clase 18 a la clase 20.
+- Las guías P15, P16 y P17 descargan `neo4j`, `redis` y `amazon/dynamodb-local` sin etiqueta de versión. No se levantaron esos contenedores al incorporar. [P15, p. 1; P16, p. 1; P17, p. 1]

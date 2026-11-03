@@ -358,9 +358,7 @@ WHERE NOT (:User {name: 'Mary'})-[:FRIENDS_WITH]-(friend_of_friend)
 RETURN DISTINCT friend_of_friend.name
 ```
 
-*Todo este inciso es complemento del agente: el material solo nombra Neo4j como
-base de grafos y no enseña Cypher.* [T13, p. 22; C01, p. 6] No se verificó en
-un motor.
+La lectura usa los patrones de camino de T17: una relación de longitud variable y el filtro que deja afuera el vínculo directo. No se ejecutó en un motor Neo4j. [T17, pp. 13, 25–26; P14, p. 4]
 
 **En lenguaje natural:** "¿Qué usuarios están a dos o tres pasos de amistad de
 Mary —amigos de sus amigos, o amigos de esos— pero todavía no son amigos

@@ -1,0 +1,379 @@
+FUENTE: P18
+TITULO: TPO FarmaRed — sistema de gestión de red de farmacias
+ORIGINAL: material/catedra/practica/tpo-farmared.pdf
+
+===== PAGINA 1 =====
+
+                                BASE DE DATOS II
+                                          2do Cuatrimestre 2026
+
+                              Trabajo Práctico Obligatorio
+                            Sistema de Gestión de Red de Farmacias
+
+
+ Carácter                Obligatorio
+ Modalidad               Grupos de 4 integrantes
+ Fecha de entrega        A definir por la cátedra
+ Entrega                 Link de repositorio GitHub + Informe PDF
+ Plataforma              GitHub Codespaces
+
+
+
+
+1. Contexto y Descripción del Problema
+Usted y su equipo son contratados como consultores de datos por FarmaRed S.A., una red de
+farmacias con presencia en las provincias de Buenos Aires, Santa Fe y Córdoba que cuenta, además,
+con una droguería propia que abastece de medicamentos y productos sanitarios a sus sucursales. La
+empresa necesita modernizar su sistema de backoffice, actualmente basado en planillas de cálculo,
+migrando a una arquitectura de persistencia políglota que combine al menos dos motores NoSQL.
+El sistema debe gestionar información sobre clientes, sucursales, farmacéuticos, proveedores
+(laboratorios y droguerías), el catálogo de productos, el stock por lote y fecha de vencimiento, las
+recetas médicas y las ventas con su detalle. Cada entidad tiene características distintas (estructura
+jerárquica, frecuencia de escritura, necesidad de consistencia, relaciones con otras entidades) que
+justifican el uso de diferentes paradigmas de bases de datos.
+Las decisiones de diseño deben estar fundamentadas técnicamente en el informe de entrega,
+indicando por qué cada motor es adecuado para cada caso de uso.
+
+
+2. Datasets Provistos
+Se entregan los archivos CSV listados a continuación (codificación UTF-8, separador coma). El equipo
+deberá poblar las bases de datos a partir de estos datasets e incorporar al menos 10 registros
+adicionales propios en cada colección/tabla para enriquecer las consultas. Todos los datos son ficticios
+(CUIT, matrículas, DNI, obras sociales y laboratorios incluidos).
+Convenciones generales: los campos vacíos representan valores nulos; los booleanos se expresan
+como True/False; las fechas usan formato ISO (AAAA-MM-DD); los importes están expresados en
+pesos argentinos (ARS) y son enteros. Los datasets toman como referencia temporal el 13/10/2026.
+
+2.1 clientes.csv
+Personas que compran en la red de farmacias, junto con su cobertura de salud (8 registros).
+
+ Campo                         Tipo          Descripción
+ id_cliente                    String        Identificador único (ej. C001).
+ nombre / apellido             String        Nombre y apellido del cliente.
+ dni                           String        Documento nacional de identidad. Debe ser único.
+ email / telefono              String        Datos de contacto.
+
+
+                                  Base de Datos II – TPO FarmaRed – Página 1
+
+===== PAGINA 2 =====
+
+ Campo                         Tipo         Descripción
+ ciudad / provincia            String       Domicilio del cliente.
+                                            Cobertura: OSDE, Swiss Medical, PAMI, IOMA, Galeno o 'Sin
+ obra_social                   String
+                                            cobertura'.
+ nro_afiliado                  String       Número de afiliado. Vacío si no tiene cobertura.
+ activo                        Boolean      False indica baja lógica.
+
+2.2 sucursales.csv
+Establecimientos de la red (5 registros). Las sucursales de tipo 'Farmacia' atienden al público; la
+'Droguería' es el centro de distribución que abastece a las farmacias y no registra ventas minoristas.
+
+ Campo                         Tipo         Descripción
+ id_sucursal                   String       Identificador único (ej. S001).
+ nombre                        String       Nombre comercial de la sucursal.
+ tipo                          String       'Farmacia' o 'Droguería'.
+ direccion / ciudad /
+ provincia                     String       Ubicación.
+
+ telefono                      String       Teléfono de contacto.
+ activo                        Boolean      Sucursal habilitada.
+
+2.3 farmaceuticos.csv
+Profesionales matriculados que trabajan en la red (7 registros). Cada farmacéutico pertenece a una
+única sucursal.
+
+ Campo                         Tipo         Descripción
+ id_farmaceutico               String       Identificador único (ej. F001).
+ nombre / apellido             String       Datos personales.
+ matricula                     String       Matrícula profesional (ej. MN-18041). Única.
+ cargo                         String       'Director Técnico' o 'Farmacéutico'.
+ id_sucursal                   String       Sucursal donde trabaja (referencia a sucursales).
+ activo                        Boolean      False si ya no trabaja en la red.
+
+2.4 proveedores.csv
+Laboratorios y droguerías que proveen los productos (5 registros).
+
+ Campo                         Tipo         Descripción
+ id_proveedor                  String       Identificador único (ej. PRV001).
+ razon_social                  String       Razón social.
+ cuit                          String       CUIT con guiones.
+ tipo                          String       'Laboratorio' o 'Droguería'.
+ ciudad / provincia /
+ telefono                      String       Datos de ubicación y contacto.
+
+ activo                        Boolean      False si se dejó de operar con el proveedor.
+
+
+
+
+                                 Base de Datos II – TPO FarmaRed – Página 2
+
+===== PAGINA 3 =====
+
+2.5 productos.csv
+Catálogo de medicamentos y productos sanitarios (13 registros).
+
+ Campo                          Tipo         Descripción
+ id_producto                    String       Identificador único (ej. PRD001).
+ nombre                         String       Nombre comercial con concentración y cantidad.
+ principio_activo               String       Droga o principio activo.
+ categoria                      String       Clasificación terapéutica (Analgésico, Antibiótico, etc.).
+ presentacion                   String       Forma farmacéutica y contenido.
+ condicion_venta                String       'Venta libre', 'Bajo receta' o 'Bajo receta archivada'.
+ precio_unit                    Integer      Precio de lista vigente por unidad (ARS).
+ id_proveedor                   String       Proveedor habitual (referencia a proveedores).
+ activo                         Boolean      False si el producto fue discontinuado.
+
+2.6 stock_lotes.csv
+Existencias por lote y por sucursal, incluida la droguería (18 registros). Una sucursal puede tener varios
+lotes del mismo producto con distintos vencimientos.
+
+ Campo                          Tipo         Descripción
+ id_lote                        String       Identificador único (ej. L001).
+ id_producto                    String       Producto almacenado (referencia a productos).
+ id_sucursal                    String       Sucursal donde se encuentra el lote (referencia a sucursales).
+ nro_lote                       String       Número de lote asignado por el laboratorio.
+ unidades                       Integer      Unidades disponibles.
+ vencimiento                    Date         Fecha de vencimiento del lote.
+
+2.7 recetas.csv
+Recetas médicas presentadas por los clientes (9 registros). Las recetas de tratamiento prolongado
+permiten hasta 3 dispensas.
+
+ Campo                          Tipo         Descripción
+ id_receta                      String       Identificador único (ej. RC001).
+ id_cliente                     String       Cliente al que fue prescripta (referencia a clientes).
+ medico /
+                                String       Médico prescriptor y su matrícula (dato externo a la red).
+ matricula_medico
+ fecha_emision                  Date         Fecha en que se emitió la receta.
+ tipo                           String       'Simple', 'Archivada' o 'Tratamiento prolongado'.
+ dispensas_autorizadas          Integer      Cantidad de veces que puede dispensarse.
+ dispensas_realizadas           Integer      Cantidad de veces que ya se dispensó.
+                                             Fecha estimada de la próxima dispensa. Vacía si no
+ proxima_dispensa               Date
+                                             corresponde.
+ estado                         String       'Vigente', 'Completada' o 'Vencida'.
+
+
+
+
+                                  Base de Datos II – TPO FarmaRed – Página 3
+
+===== PAGINA 4 =====
+
+2.8 ventas.csv
+Cabecera de cada venta registrada en las farmacias (16 registros). El detalle de productos se
+encuentra en detalle_ventas.csv.
+
+ Campo                         Tipo          Descripción
+ id_venta                      String        Identificador único (ej. V001).
+ id_cliente                    String        Cliente que compra (referencia a clientes).
+ id_farmaceutico               String        Farmacéutico que atendió (referencia a farmaceuticos).
+ id_receta                     String        Receta asociada (referencia a recetas). Vacío en ventas libres.
+ fecha                         Date          Fecha de la venta.
+ tipo                          String        'Venta libre' o 'Con receta'.
+ medio_pago                    String        Efectivo, Débito, Crédito, Transferencia u Obra social.
+ total                         Integer       Suma de cantidad × precio_unit de los ítems (ARS).
+ estado                        String        'Completada', 'Pendiente' o 'Anulada'.
+
+2.9 detalle_ventas.csv
+Ítems de cada venta (22 registros).
+
+ Campo                         Tipo          Descripción
+ id_detalle                    String        Identificador único (ej. D001).
+ id_venta                      String        Venta a la que pertenece (referencia a ventas).
+ id_producto                   String        Producto vendido (referencia a productos).
+ cantidad                      Integer       Unidades vendidas.
+                                             Precio unitario al momento de la venta (puede diferir del precio
+ precio_unit                   Integer
+                                             de lista actual).
+
+2.10 Relaciones entre datasets
+ Campo origen                         Referencia a                               Cardinalidad
+ farmaceuticos.id_sucursal            sucursales.id_sucursal                     N:1
+ productos.id_proveedor               proveedores.id_proveedor                   N:1
+ stock_lotes.id_producto              productos.id_producto                      N:1
+ stock_lotes.id_sucursal              sucursales.id_sucursal                     N:1
+ recetas.id_cliente                   clientes.id_cliente                        N:1
+ ventas.id_cliente                    clientes.id_cliente                        N:1
+ ventas.id_farmaceutico               farmaceuticos.id_farmaceutico              N:1
+ ventas.id_receta                     recetas.id_receta                          N:1 (opcional)
+ detalle_ventas.id_venta              ventas.id_venta                            N:1
+ detalle_ventas.id_producto           productos.id_producto                      N:1
+
+
+
+
+                                  Base de Datos II – TPO FarmaRed – Página 4
+
+===== PAGINA 5 =====
+
+2.11 Reglas de negocio
+Las siguientes reglas aplican a todo el sistema y deben respetarse en los servicios de escritura:
+  • Condición de venta. Los productos 'Bajo receta' y 'Bajo receta archivada' solo pueden venderse
+    contra una receta del mismo cliente en estado 'Vigente'. Los productos de 'Venta libre' no
+    requieren receta.
+  • Tratamiento prolongado. Cada dispensa incrementa dispensas_realizadas. Mientras queden
+    dispensas disponibles, proxima_dispensa se fija 30 días después de la dispensa; al alcanzar
+    dispensas_autorizadas, la receta pasa a 'Completada' y proxima_dispensa queda vacía. Las
+    recetas simples y archivadas se completan con su única dispensa.
+  • Estados de venta. 'Completada' descuenta stock y computa ingresos. 'Pendiente' (reserva o
+    faltante a retirar) no descuenta stock ni computa ingresos. 'Anulada' no tiene efecto económico.
+  • Ventas y sucursales. Solo se registran ventas en sucursales de tipo 'Farmacia', a través de un
+    farmacéutico activo. La droguería solo mantiene stock central.
+  • Stock. La dispensación sigue el criterio FEFO (First Expired, First Out): se consumen primero los
+    lotes con vencimiento más próximo. Los lotes vencidos no pueden dispensarse y el stock nunca
+    puede quedar negativo.
+  • Bajas lógicas. Ninguna entidad se elimina físicamente; la baja se registra con activo = False.
+  • Precios. El precio_unit de detalle_ventas es el precio vigente al momento de la venta. El total de
+    la venta debe coincidir con la suma de sus ítems.
+
+
+3. Requisitos del Sistema
+3.1 Arquitectura de Persistencia Políglota
+El sistema DEBE utilizar al menos dos (2) motores de bases de datos NoSQL de paradigmas distintos
+(por ejemplo: documentos, clave-valor, columnar, grafos). La elección de los motores debe estar
+justificada técnicamente en el informe, relacionando las características del motor con las necesidades
+de cada entidad o caso de uso. Cada grupo debe decidir qué datos persiste en cada motor y cómo se
+relacionan entre sí.
+
+3.2 Características de los datos a considerar
+Como insumo para la justificación de la arquitectura, tenga en cuenta las siguientes características del
+negocio:
+
+ Dato / caso de uso          Características relevantes
+                             Estructura jerárquica (cabecera con ítems de longitud variable). Se consultan
+ Ventas y su detalle         habitualmente por cliente, por farmacéutico y por rango de fechas. Alto volumen
+                             de inserciones.
+                             Actualizaciones frecuentes y potencialmente concurrentes (cada venta
+ Stock por lote              decrementa unidades). Requiere evitar stock negativo y priorizar lotes por
+                             vencimiento.
+                             Entidades con atributos propios que se consultan, modifican y dan de baja
+ Clientes, recetas y
+                             lógica. Relaciones cliente–receta–venta–producto que se recorren en consultas
+ farmacéuticos
+                             de historial.
+ Catálogo y proveedores      Datos de referencia con baja frecuencia de cambio y alta frecuencia de lectura.
+ Reportes agregados          Totales por farmacéutico, rankings de productos y conteos por período.
+
+
+
+3.3 Requisitos técnicos
+  • El entorno debe poder levantarse completamente en GitHub Codespaces (por ejemplo mediante
+    devcontainer y/o docker-compose), sin pasos manuales no documentados.
+
+                                  Base de Datos II – TPO FarmaRed – Página 5
+
+===== PAGINA 6 =====
+
+     • La carga de datos debe ser reproducible e idempotente: un script que parta de los CSV provistos
+       y de los registros adicionales del equipo.
+     • Los registros adicionales deben ejercitar las consultas: incluir fechas recientes, stock bajo, lotes
+       próximos a vencer o vencidos, recetas vencidas, clientes sin compras, ventas pendientes y casos
+       borde similares.
+     • Los motores NoSQL no garantizan integridad referencial: el equipo debe documentar cómo la
+       resuelve (validaciones en la aplicación, modelado embebido, etc.).
+     • Las consultas que dependen de la fecha actual ("hoy", "mes actual", "últimos 60 días", "último
+       año") deben calcularse con la fecha del sistema y no con fechas fijas en el código.
+
+
+4. Consultas y Servicios a Implementar
+Se deben implementar las 15 consultas/servicios listados a continuación. Cada uno debe estar en una
+función o módulo separado, con su respectiva documentación (propósito, parámetros, valor de retorno
+y motor utilizado). Presentar al menos un ejemplo del resultado en el informe.
+
+ #       Tipo          Descripción de la Consulta / Servicio
+     1   Lectura       Productos activos con todos los datos de su proveedor.
+                       Ventas en estado 'Pendiente' con el farmacéutico asignado (nombre, matrícula y
+     2   Lectura
+                       sucursal) y el total.
+                       Historial completo de un cliente (dado su id): ventas y recetas ordenadas
+     3   Lectura
+                       cronológicamente por fecha.
+     4   Agregación    Clientes con más de una receta registrada, indicando la cantidad.
+                       Farmacéuticos activos y cantidad de ventas registradas en los últimos 60 días
+     5   Agregación
+                       (excluyendo anuladas). Deben aparecer también los que tienen cero.
+                       Recetas de tratamiento prolongado en estado 'Vigente' cuya próxima dispensa es
+     6   Lectura
+                       anterior a hoy, con los datos del cliente.
+     7   Agregación    Top 5 productos más vendidos (unidades), considerando solo ventas 'Completada'.
+     8   Lectura       Lotes con menos de 50 unidades, indicando producto, sucursal y proveedor.
+     9   Lectura       Ventas de tipo 'Venta libre' con total menor a $5.000 (excluyendo anuladas).
+                       Todos los clientes atendidos en una sucursal determinada (a través del farmacéutico que
+ 10      Lectura
+                       registró la venta, esté activo o no).
+                       Vista agregada: ingresos totales por farmacéutico en el mes actual (solo ventas
+ 11      Agregación
+                       'Completada').
+ 12      Lectura       Clientes sin ventas registradas en el último año.
+                       ABM completo de clientes: alta (validando DNI único), modificación de datos de contacto
+ 13      Servicio
+                       y cobertura, y baja lógica.
+                       Registro de una nueva venta 'Completada' (cabecera e ítems) con validación de: cliente
+                       existente y activo; farmacéutico existente, activo y de una sucursal tipo 'Farmacia';
+ 14      Servicio      productos existentes y activos; y, para productos bajo receta, receta existente, vigente y
+                       del mismo cliente. El total se calcula a partir de los ítems y se actualiza la receta según
+                       las reglas de negocio.
+                       Actualización masiva del stock: dada una venta registrada, decrementar las unidades de
+                       cada producto del detalle en los lotes de la sucursal del farmacéutico, aplicando FEFO y
+ 15      Servicio
+                       omitiendo lotes vencidos. Si el stock vigente no alcanza para algún ítem, la operación
+                       completa se rechaza sin modificar ningún lote.
+
+
+
+
+                                     Base de Datos II – TPO FarmaRed – Página 6
+
+===== PAGINA 7 =====
+
+Consideraciones sobre las consultas
+  • Las consultas con parámetros (3, 10, 13, 14 y 15) deben recibirlos como argumentos de la
+    función y no tenerlos fijos en el código.
+  • Las consultas 14 y 15 deben funcionar de manera integrada: si el descuento de stock falla, no
+    deben quedar una venta ni una receta modificadas. El informe debe explicar la estrategia elegida
+    (transacciones, orden de operaciones, compensación u otra) según las garantías de cada motor.
+  • Para las consultas que cruzan información de más de una entidad, el informe debe indicar cómo
+    se resuelve la relación en el motor elegido (embebido, referencia, recorrido de relaciones,
+    combinación en la aplicación, etc.).
+  • Para los servicios de escritura (13, 14 y 15) el informe debe mostrar el estado de los datos antes
+    y después de la ejecución, incluyendo al menos un caso de rechazo por validación.
+
+
+5. Entregables
+5.1 Repositorio GitHub
+  • README con instrucciones para levantar el entorno en Codespaces, cargar los datos y ejecutar
+    cada consulta.
+  • Configuración del entorno (devcontainer y/o docker-compose) con los motores utilizados.
+  • Carpeta con los datasets provistos y los registros adicionales del equipo.
+  • Scripts de carga de datos.
+  • Código fuente con un módulo o función por consulta (q01 a q15), documentado.
+  • Historial de commits que evidencie la participación de los tres integrantes.
+
+5.2 Informe PDF
+  • Carátula con los integrantes del grupo y link al repositorio.
+  • Arquitectura políglota: motores elegidos y justificación técnica para cada entidad o caso de uso.
+  • Modelo de datos en cada motor (colecciones, estructuras de clave, nodos y relaciones, según
+    corresponda) con diagramas.
+  • Estrategia de carga de datos y descripción de los registros adicionales incorporados.
+  • Las 15 consultas/servicios: enunciado, código o sentencia utilizada y ejemplo de resultado.
+  • Decisiones de consistencia e integridad (en particular para las consultas 14 y 15).
+  • Limitaciones, alternativas evaluadas y conclusiones.
+
+
+6. Criterios de Evaluación
+Aspecto                                                                           Ponderación
+Arquitectura políglota y justificación técnica de los motores                                   25 %
+Modelado de datos y estrategia de carga                                                         20 %
+Consultas de lectura y agregación (1 a 12)                                                      25 %
+Servicios de escritura (13 a 15): validaciones y consistencia                                   20 %
+Calidad del repositorio, documentación e informe                                                10 %
+
+
+
+
+                                     Base de Datos II – TPO FarmaRed – Página 7

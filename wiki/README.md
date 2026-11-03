@@ -26,6 +26,9 @@ Esta es la puerta de entrada al conocimiento curado. Cada afirmación importante
 20. [Cassandra: modelado y CQL](temas/20-cassandra-modelado-y-cql.md)
 21. [Cassandra: almacenamiento y Bloom filters](temas/21-cassandra-almacenamiento-y-bloom.md)
 22. [Cassandra: replicación, consistencia y DIGEST](temas/22-cassandra-consistencia-y-digest.md)
+23. [Neo4j: grafos de propiedad y Cypher](temas/23-neo4j-grafos-y-cypher.md)
+24. [Redis y bases de clave-valor](temas/24-redis-clave-valor.md)
+25. [Amazon DynamoDB](temas/25-dynamodb.md)
 
 ## Referencias rápidas
 
@@ -45,6 +48,7 @@ Esta es la puerta de entrada al conocimiento curado. Cada afirmación importante
 - [Ejercicios tipo parcial](../practica/parcial/README.md) y su [incorporación](../material/incorporaciones/2026-10-13-ejercicios-parcial.md)
 - [Claves, consistencia y Bloom filters: figuras](../material/figuras/README.md)
 - [Mecanismo DIGEST de cátedra](../material/catedra/teoria/recursos/c05-cassandra-digest.png)
+- [TPO FarmaRed](../entregas/tpo-farmared/README.md) y su [incorporación](../material/incorporaciones/2026-11-03-neo4j-redis-dynamodb-tpo.md)
 
 ## Cobertura actual
 
@@ -73,3 +77,7 @@ Esta es la puerta de entrada al conocimiento curado. Cada afirmación importante
 | Cassandra: commit log, memtable, SSTable, tombstones y Bloom filters | T16, C04 | Curado; diagramas recuperados y salvedades de durabilidad/compactación |
 | Cassandra: replicación, consistencia y DIGEST | T16, C05 | Curado; background read repair histórico y diferencias de versión registradas |
 | TP 10 Cassandra, partes I y II | P12, P13 | Indexado; sin resolución ni ejecución; supuestos del modelado de la parte II registrados; versión del entorno no fijada |
+| Neo4j: grafos de propiedad, Cypher, HA y Causal Clustering | T17, C06, P15 | Curado; HA y Raft conviven como arquitecturas distintas; CAP de T17 y T19 sin unificar |
+| Redis y clave-valor | T18, T19, P16, P16A | Curado; P16A no resuelve la guía; tabla IMDB recuperada de la página |
+| DynamoDB | T20, P17 | Curado; el servicio no recibe etiqueta CAP en T20; la guía visual clasifica al paper Dynamo |
+| TPO FarmaRed | P18 | Consigna indexada; CSV en el repositorio del grupo; grupos de 4 y “tres integrantes” sin resolver |

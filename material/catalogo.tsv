@@ -49,3 +49,13 @@ P12	catedra-practica	TP 10 — Cassandra, parte I	material/catedra/practica/tp-1
 P13	catedra-practica	TP 10 — Cassandra, parte II	material/catedra/practica/tp-10-cassandra-parte-2.pdf	2	2026	vigente	ITBA TP 10 - Cassandra Parte II.pdf
 B01	catedra-bibliografia	Seven Databases in Seven Weeks, 2.ª ed. (Perkins, Redmond y Wilson, 2018)	material/catedra/bibliografia/b01-seven-databases-in-seven-weeks-2e.pdf	354	2026	local	Seven-databases-in-seven-weeks-second-edition_p1_0.pdf
 P14	catedra-practica	Ejercicios tipo parcial	material/catedra/practica/p14-ejercicios-tipo-parcial.pdf	7	2026	vigente	Ejercicios tipo Parcial Bases de Datos II.pdf
+T17	catedra-teoria	Neo4j: grafos de propiedad y Cypher	material/catedra/teoria/t17-neo4j.pdf	41	2026	vigente	BD2_Clase 16 - Neo4J.pdf
+T18	catedra-teoria	Bases de clave-valor: generalidades y Redis	material/catedra/teoria/t18-clave-valor-generalidades.pdf	31	2026	vigente	BD2_Clase 17 - Bases de Clave-Valor (generalidades).pdf
+T19	catedra-teoria	Redis: estructuras, comandos y hands-on	material/catedra/teoria/t19-redis-hands-on.pdf	36	2026	vigente	BD2_Clase 18 - Bases de Clave-Valor (Hands-on).pdf
+T20	catedra-teoria	Amazon DynamoDB	material/catedra/teoria/t20-amazon-dynamodb.pdf	34	2026	vigente	BD2_Clase 20 - Amazon DynamoDB.pdf
+C06	catedra-clase	Anexo Neo4j: MERGE, Causal Clustering y Raft	material/catedra/teoria/c06-neo4j-merge-causal-clustering.pdf	13	2026	vigente	Neo4j_anexo.pdf
+P15	catedra-practica	TP 11 — Neo4j	material/catedra/practica/tp-11-neo4j.pdf	2	2026	vigente	ITBA TP 11 - Neo4j(1).pdf
+P16	catedra-practica	TP 12 — Redis	material/catedra/practica/tp-12-redis.pdf	2	2026	vigente	ITBA TP 12 - Redis.pdf
+P16A	catedra-recurso	Solución de un ejercicio de Redis	material/catedra/practica/recursos/p16a-solucion-ejercicio-redis.txt	-	2026	vigente	Solución ejercicio REDIS.txt
+P17	catedra-practica	TP 13 — DynamoDB	material/catedra/practica/tp-13-dynamodb.pdf	2	2026	vigente	ITBA TP 13 - DynamoDB.pdf
+P18	catedra-practica	TPO FarmaRed — sistema de gestión de red de farmacias	material/catedra/practica/tpo-farmared.pdf	7	2026	vigente	TPO_FarmaRed.pdf

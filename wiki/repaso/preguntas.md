@@ -156,3 +156,24 @@ Fuentes para corregir el bloque: [T13, pp. 9, 12–30, 41–52; T14, pp. 2–24,
 112. ¿Cómo clasifica la cátedra a Cassandra según CAP y qué matiz agrega el nivel de consistencia configurable?
 
 Fuentes para corregir el bloque: [T13, p. 18; T16, pp. 11–19, 25–47, 51, 56, 59–74; C04, pp. 3–8; C05; P12, pp. 1–3; P13, pp. 1–2]. Las precisiones de versión, tipos y reparación que no constan en las fuentes están etiquetadas como complemento en los [apuntes](../temas/22-cassandra-consistencia-y-digest.md) y en [dudas](../dudas-y-conflictos.md).
+
+## Neo4j, Redis y DynamoDB
+
+113. ¿Qué piezas tiene un grafo de propiedad y qué guarda cada una?
+114. Compará `CREATE`, `MATCH` y `MERGE`. ¿Cuándo corren `ON CREATE SET` y `ON MATCH SET`?
+115. ¿Por qué una restricción de unicidad sigue haciendo falta aunque se use `MERGE`?
+116. En Causal Clustering, ¿quién vota en Raft y qué hacen los secundarios? Con 3 primarios, ¿cuántas fallas tolera el quórum?
+117. ¿Qué evita un bookmark en una lectura hecha sobre un secundario?
+118. ¿Cómo clasifica T17 a Neo4j HA y cómo clasifica T19 a Neo4j? ¿Qué arquitectura describe cada frase?
+119. En el modelo de T18, ¿qué conoce el motor del valor y cuáles son las tres operaciones básicas?
+120. Compará RDB y AOF: qué puede perderse en una caída y cuál usa Redis al reiniciar si ambos están activos.
+121. ¿Qué hacen `MULTI`, `EXEC`, `DISCARD` y `WATCH`? ¿En qué se distingue `DISCARD` de un `ROLLBACK`?
+122. ¿Qué vigila Sentinel y por qué la clase pide al menos tres instancias?
+123. ¿Qué estructura de Redis guarda miembros únicos con un score, admite scores repetidos y permite consultar un rango de puntajes, como en el TP 12?
+124. ¿Dónde clasifican a Redis T19 y la guía visual de T20?
+125. ¿En qué separa la clase al paper Dynamo del servicio DynamoDB, y qué tope de tamaño tiene un ítem?
+126. Compará clave solo hash con clave hash más rango, y un LSI con un GSI. ¿Cuál de los índices no se agrega después de crear la tabla?
+127. ¿Qué miden un RCU y un WCU en el material, y por qué una lectura fuertemente consistente cuesta más?
+128. En el TPO, ¿qué hacen con el stock y con los ingresos los estados Completada, Pendiente y Anulada, y en qué orden se consumen los lotes?
+
+Fuentes para corregir el bloque: [T17, pp. 3–4, 9, 13, 17–20, 28, 36–40; C06, pp. 2–13; T18, pp. 2–3, 9, 12–18, 24–27; T19, pp. 7, 13–16, 36; T20, pp. 4–6, 10, 17–18, 23, 31; P16, p. 2; P18, pp. 4–5]. Las clasificaciones CAP que se contradicen están en [dudas](../dudas-y-conflictos.md).

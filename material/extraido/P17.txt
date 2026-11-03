@@ -1,0 +1,101 @@
+FUENTE: P17
+TITULO: TP 13 — DynamoDB
+ORIGINAL: material/catedra/practica/tp-13-dynamodb.pdf
+
+===== PAGINA 1 =====
+
+Base de Datos II - TP 13​
+
+
+
+
+                                   TP N°13 – DynamoDB
+
+Esta práctica se basa en el libro “Seven Databases in Seven Weeks (2nd Edition)” de Luc
+Perkins.
+
+
+
+
+Sin embargo, existe una versión local pensada para desarrolladores de aplicaciones sobre
+DynamoDB, la cual vamos a usar para hacer los ejercicios.
+
+Antes de comenzar es necesario utilizar dockers/contenedores:
+   ●​ Instalar Docker Desktop for Windows o for Mac o Docker Engine en Linux
+   ●​ Para descargar la versión oficial de DynamoDB local ejecutar: docker pull
+       amazon/dynamodb-local
+   ●​ Levantar el contenedor con: docker run --name Mydynamodb -p 8000:8000 -d
+       amazon/dynamodb-local
+   ●​ Para apagar el contenedor ejecutar: docker stop Mydynamodb
+   ●​ Para iniciarla nuevamente ejecutar: docker start Mydynamodb
+   ●​ Para listar todos los contenedores existentes ejecutar: docker ps –a
+
+Para hacer los ejercicios es necesario instalar el cliente de línea de comando de Amazon (awscli). El
+mismo lo pueden instalar dentro del contenedor o en la máquina host del mismo:
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+Si deciden instalar el cliente dentro del contenedor tendrán que acceder a la línea de comandos
+dentro del contenedor como root (para poder instalar algunos paquetes que faltan como unzip y
+less): docker exec -u 0 -it Mydynamodb bash
+
+Luego es necesario configurar el awscli con el siguiente comando: aws configure
+   ●​ AWS Access Key ID [None]: 1234
+   ●​ AWS Secret Access Key [None]: 567890
+   ●​ Default region name [None]: us-east-1
+   ●​ Default output format [None]: json
+
+Para listar las tablas existentes en nuestro DynamoDB es necesario ejecutar: aws dynamodb
+list-tables --endpoint-url http://localhost:8000
+
+El AWS CLI no puede usar la versión local de DynamoDB como endpoint default, es por ello que hay que
+agregar el parámetro --endpoint-url con cada comando de AWS CLI.
+
+
+
+
+                                             ITBA - 2026
+
+===== PAGINA 2 =====
+
+Base de Datos II - TP 13​
+
+
+
+
+Ejercicios:
+
+Realicen los siguientes ejercicios:
+
+    1)​ Capítulo 7, páginas 218 a 227
+           a)​ Para familiarizarse con las operaciones CRUD de DynamoDB seguir los pasos del
+               libro para las tablas ShoppingCart y Books
+
+
+    2)​ Capítulo 7, páginas 223 y 224
+           a)​ ¿Cuáles son las diferencias entre una simple key y una composite key?
+
+
+    3)​ Capítulo 7, páginas 230, 231 y 232
+           a)​ ¿Cuáles son las diferencias entre un local secondary index y un global secondary
+               index?
+
+    4)​ Capítulo 7, página 232
+        a)​ Hacer el ejercicio Find.1 allí mencionado. Ver el siguiente link: A Deep Dive into
+            DynamoDB Partitions
+
+
+    5)​ Capítulo 7, página 233
+            a)​ Hacer el ejercicio Do.1 allí mencionado.
+            b)​ Hacer el ejercicio Do.3 allí mencionado.
+
+
+    6)​ Resuma las fortalezas y debilidades de DynamoDB. ¿En qué situaciones utilizarían esta base
+        de datos?
+
+
+    7)​ Clasifique DynamoDB según el Teorema CAP.
+
+
+
+
+                                             ITBA - 2026

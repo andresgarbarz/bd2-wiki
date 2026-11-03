@@ -1,0 +1,133 @@
+1. Insertar en la BD REDIS 5 títulos de películas:
+SET pelicula1 "Maléfica"
+SET pelicula2 "Frozen"
+MSET pelicula3 "Aladdin" pelicula4 "El regreso de Mary Poppins" pelicula5 "Dumbo" 
+
+EXISTS pelicula1
+SETNX pelicula2 "Frozen II"
+-- Devolverá 0, porque existe y no lo puede establecer la clave
+
+GET pelicula2
+SETNX pelicula6 "Toy Story 4"
+-- Devolverá 1, porque no existe la clave pelicula6
+
+GET pelicula6
+
+KEYS *
+MGET pelicula1 pelicula2 pelicula7
+-- Si no existe una clave (como pelicula7) se devolverá nil
+
+KEYS pelicula[1-3]*
+KEYS pelicula[^6]
+
+DEL pelicula3
+-- Borrado de una pelicula
+EXISTS pelicula3
+-- Si no existe se borrará
+
+SET pelicula7 "Pan."
+
+TTL pelicula7
+-- Devolverá -1 porque no se ha establecido un tiempo de expiración
+EXPIRE pelicula7 15
+-- Se establecen 15 segundos de tiempo de expiración
+
+GET pelicula7
+TTL pelicula7
+-- Devolverá los segundos restantes
+-- Cuando haya expirado la clave, devolverá -2
+
+
+2. Cree una lista de cantantes L_Cantantes e inserte 5 elementos. 
+
+LPUSH cantantes "Amaral"
+LPUSH cantantes "India Martínez"
+LPUSH cantantes "Melendi"
+RPUSH cantantes "Alejandro Sanz"
+RPUSH cantantes "Freddie Mercury"
+
+-- Devolviendo el número de elementos que tiene la lista.
+
+LLEN cantantes 
+LRANGE cantantes 0 -1
+LINDEX cantantes 0
+LINDEX cantantes 1
+LINDEX cantantes 2
+LINDEX cantantes -2
+LINDEX cantantes -1
+
+RPOP cantantes
+-- Se borrará a Freddie Mercury
+LRANGE cantantes 0 -1
+-- La lista tendrá un elemento menos
+
+3. Cree un hash para 5 Libros, incluyendo su título, su ISBN, la editorial y el año.
+
+HSET libro1 "titulo" "Loba Negra"
+HMSET libro1 "isbn" "8466666494" "editorial" "Ediciones B" "año" "2019"
+
+HGETALL libro1
+
+HMSET libro2 "titulo" "Reina Roja" "isbn" "8466664416" "editorial" "Ediciones B" "año" "2018"
+
+HKEYS libro2
+
+HMSET libro3 "titulo" "La verdad del caso de Harry Quebert" "isbn" "9788466332286" "editorial" "DEBOLSILLO" "año" "2016"
+
+HGETALL libro3
+
+HMSET libro4 "titulo" "El libro de los Baltimore" "isbn" "8466343113" "editorial" "DEBOLSILLO" "año" "2018"
+
+HGETALL libro4
+
+HMSET libro5 "titulo" "La chica del tren" "isbn" "9788466332286" "editorial" "Planeta" "año" "2019"
+
+HVALS libro5
+
+4. Cree un conjunto de productos de BD NoSQL y otro de BD Relacionales.
+
+SADD BD_NoSQL "REDIS" "MongoDB" "Neo4J" "Cassandra"
+SADD BD_Relacionales "Oracle" "MySQL" "Microsoft SQL Server" "PostgreSQL"
+SMEMBERS BD_NoSQL
+SMEMBERS BD_Relacionales
+
+SUNION BD_NoSQL BD_Relacionales
+SINTER BD_NoSQL BD_Relacionales
+-- Devolverá una lista vacia, ya que no hay elementos comunes
+
+SDIFF BD_NoSQL BD_Relacionales
+SDIFF BD_Relacionales BD_NoSQL
+
+SRANDMEMBER BD_NoSQL 2
+-- 2 elementos aleatorios sin repetidos
+
+SRANDMEMBER BD_Relacionales -3 
+-- 3 elementos aleatorios con repetidos
+
+SISMEMBER BD_NoSQL "Oracle"
+-- Devuelve 0 porque "Oracle" no pertenece al conjunto de BD_NoSQL
+
+5. Cree un conjunto ordenado de productos de BD NoSQL incluyendo una puntuación de popularidad.
+
+zadd productosNoSQL 100 mongodb 75 redis 50 cassandra 40 neo4j
+-- Devuelve el número de elementos del conjunto ordenado
+zcount productosNoSQL 50 100
+-- Devuelve 3, ya que son los elementos que tienen una puntuación comprendida entre 50 y 100
+
+ZRANGE productosNoSQL 0 -1
+-- Devuelve todos los elementos (menos a más: neo4j, cassandra, redis y mongodb) 
+	
+ZREVRANGE productosNoSQL 0 -1  
+-- Devuelve todos los elementos (más a menos: mongodb, redis, cassandra y neo4j) 
+
+ZREM productosNoSQL "redis"
+-- Devuelve 1 si existe el elemento y lo borra
+
+ZRANGEBYSCORE productosNoSQL 1 (50
+-- Devuelve los que tenga una puntuacion del 1 al 50 (exincluido el 50): neo4j 
+
+ZRANGEBYSCORE productosNoSQL 1 50 
+-- Devuelve los que tenga una puntuacion del 1 al 50 (extremos incluidos): neo4j y cassandra
+
+ZRANGEBYSCORE productosNoSQL -inf +inf WITHSCORES
+-- Devuelve los elementos con las puntuaciones asociadas

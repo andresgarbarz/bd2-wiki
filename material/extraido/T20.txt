@@ -1,0 +1,837 @@
+FUENTE: T20
+TITULO: Amazon DynamoDB
+ORIGINAL: material/catedra/teoria/t20-amazon-dynamodb.pdf
+
+===== PAGINA 1 =====
+
+Amazon DynamoDB
+
+===== PAGINA 2 =====
+
+   1. https://docs.aws.amazon.com/en_us/dynamodb/   documentación oficial en inglés (HTML, PDF, Kindle, GitHub)
+   2. https://docs.aws.amazon.com/es_es/dynamodb/   documentación en español (HTML, PDF)
+
+Cloud key/value store
+data model: key-value plus
+
+===== PAGINA 3 =====
+
+DB-Engines Ranking https://db-engines.com/en/ranking
+Hosted, scalable database service by Amazon with the data stored in Amazon's cloud
+
+#16    Overall
+#2     Key-value stores
+#2     Document stores
+
+Como Document store
+   1. MongoDB                      Document             441.90
+   2. Amazon DynamoDB              Multi-model           77.45
+
+Como Key-value
+   1. Redis                        Key-value            173.55
+   2. Amazon DynamoDB              Multi-model           77.45
+
+===== PAGINA 4 =====
+
+Amazon DynamoDB es un servicio de base de datos NoSQL totalmente administrado que ofrece un rendimiento rápido y predecible, así como
+una perfecta escalabilidad. Puede utilizar Amazon DynamoDB para crear una tabla de base de datos capaz de almacenar y recuperar
+cualquier cantidad de datos, así como de satisfacer cualquier nivel de tráfico de solicitud. Amazon DynamoDB distribuye automáticamente los
+datos y el tráfico de la tabla por una cantidad suficiente de servidores como para administrar la capacidad de solicitud especificada por el
+cliente y la cantidad de datos almacenados, al mismo tiempo que mantiene un desempeño uniforme y rápido.
+
+Amazon DynamoDB is a fully managed proprietary NoSQL database service that supports key-value and document data structures and is
+offered by Amazon.com as part of the Amazon Web Services portfolio. DynamoDB exposes a similar data model to and derives its name from
+Dynamo, but has a different underlying implementation. DynamoDB was announced by Amazon CTO Werner Vogels on January 18, 2012,
+and is presented as an evolution of Amazon SimpleDB solution.
+
+Initial release date: January 18, 2012.
+License: Proprietary
+Developed by: Amazon.com
+                                                                                             https://en.wikipedia.org/wiki/Amazon_DynamoDB
+
+You can store as many items as you want in any DynamoDB table.
+
+Each item (the equivalent of a row in an SQL database) can hold as many attributes as you want, although there is a hard size limit of 400 KB
+per item.
+
+While some folks may be reticent to trust a cloud database that’s managed by someone else, a variety of forward-thinking tech companies,
+including Airbnb, Adobe, Siemens, and Comcast, have taken the plunge and use DynamoDB as one of the core databases driving their
+platforms.
+
+https://aws.amazon.com/es/dynamodb/ (Casos practicos)
+
+All data in DynamoDB is stored on high-performing Solid State Disks (SSDs) and automatically replicated across multiple availability zones
+within an AWS region (which guarantees redundancy even within a single region).
+
+===== PAGINA 5 =====
+
+Dynamo paper (2007) → Dynamo: Amazon’s Highly Available Key-value Store
+
+https://www.dynamodbguide.com/the-dynamo-paper/
+In 2004, Amazon.com was growing rapidly and was starting to hit the upper scaling limits of its Oracle database.
+Key aspects of Dynamo
+    1. No Relational model
+    2. Availability > Consistency
+    3. Infinitely Scalable
+
+Is DynamoDB the same product described in Amazon's Dynamo paper?
+https://www.quora.com/Is-DynamoDB-the-same-product-described-in-Amazons-Dynamo-paper
+
+items in DymamoDB → rows in Postgresql.
+
+Los ítems, tienen uno o más atributos, que se corresponden con las columnas en el modelo relacional.
+
+Podemos acceder a los registros a través de un índice secundario, no sólo a través de la clave primaria.
+
+También se pueden hacer consultas por rangos.
+
+===== PAGINA 6 =====
+
+Video = SQL to NoSQL Best Practices with Amazon DynamoDB - AWS July 2016 Webinar Series
+Slides = https://www.slideshare.net/AmazonWebServices/sql-to-nosql-best-practices-with-amazon-dynamodb-aws-july-2016-webinar-series
+
+Another important thing to note about consistency is that DynamoDB supports only item-level consistency, which is analogous to row-level
+consistency in RDBMSs. There are no atomic operations across items, which means no consistency for batch operations. And when you run
+queries against indexes or whole tables, do not ever expect that the result set will be 100 percent up-to-date. Item-level consistency is a good
+thing to have, but if consistency across items is a necessity for your use case, you should explore other databases.
+
+DynamoDB is not free! It is a paid service. AWS offers a free tier for virtually all of its services so that you can kick the tires without immediately
+incurring costs, but make sure to check the pricing guide before you start going through the examples in this book.
+
+===== PAGINA 7 =====
+
+Si queremos correr DynamoDB
+DynamoDB Local for Desktop Development
+https://aws.amazon.com/es/blogs/aws/dynamodb-local-for-desktop-development/
+
+$ cd ~/dynamodb_local
+$ java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
+Initializing DynamoDB Local with the following configuration:
+Port: 8000
+InMemory:   false
+DbPath:     null
+SharedDb:   true
+shouldDelayTransientStatuses: false
+CorsParams: *
+
+Before you can access DynamoDB programmatically or through the AWS Command Line Interface (AWS CLI), you must configure your
+credentials to enable authorization for your applications. Downloadable DynamoDB requires any credentials to work, as shown in the following
+example.
+
+$ aws configure
+ AWS Access Key ID: "fakeMyKeyId"
+ AWS Secret Access Key: "fakeSecretAccessKey"
+
+
+
+
+ C:\Users\aaizemberg> aws dynamodb list-tables --endpoint-url http://localhost:8000
+
+ You must specify a region. You can also configure your region by running "aws configure".
+
+ C:\Users\aaizemberg> aws configure
+ AWS Access Key ID [****************eyId]:
+
+===== PAGINA 8 =====
+
+ AWS Secret Access Key [****************sKey]:
+ Default region name [us-east-1]:
+ Default output format [text]: json
+
+ C:\Users\aaizemberg> aws dynamodb list-tables --endpoint-url http://localhost:8000
+ {
+     "TableNames": []
+ }
+
+
+Installing the AWS Command Line Interface
+https://docs.aws.amazon.com/cli/latest/userguide/installing.html
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+$ aws dynamodb help           https://docs.aws.amazon.com/cli/latest/reference/dynamodb/index.html#cli-aws-dynamodb
+                              Available Commands (sunburst)
+                              nueva versión del sunburst
+
+Listando las tablas
+
+
+ $ aws dynamodb list-tables --endpoint-url                                C:\Program Files\Amazon\AWSCLI\bin>aws dynamodb
+ http://localhost:8000                                                    list-tables --endpoint-url http://localhost:8000
+ {                                                                        {
+     "TableNames": [                                                          "TableNames": [
+         "Books", "MusicCollection", "ShoppingCart"                               "Books", "MusicCollection", "ShoppingCart"
+     ]                                                                        ]
+ }                                                                        }
+
+
+create-table
+
+===== PAGINA 9 =====
+
+$ aws dynamodb create-table --table-name ShoppingCart --attribute-definitions
+AttributeName=ItemName,AttributeType=S --key-schema AttributeName=ItemName,KeyType=HASH --provisioned-throughput
+ReadCapacityUnits=1,WriteCapacityUnits=1 --endpoint-url http://localhost:8000
+
+
+
+$ aws dynamodb create-table --table-name MusicCollection --attribute-definitions
+AttributeName=Artist,AttributeType=S AttributeName=SongTitle,AttributeType=S --key-schema
+AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE --provisioned-throughput
+ReadCapacityUnits=1,WriteCapacityUnits=1 --endpoint-url http://localhost:8000
+
+RCU (ReadCapacityUnits) y WCU (WriteCapacityUnits)
+
+$ aws dynamodb list-tables --endpoint-url http://localhost:8000
+
+// Después de ejecutar el 'aws dynamodb create-table …' obtenemos un JSON con el resultado.
+
+ {
+  TableDescription: {
+    AttributeDefinitions: [ {
+  AttributeName: "ItemName",
+  AttributeType: "S"
+}],
+    CreationDateTime: 1475032237.808,
+    ItemCount: 0,
+    KeySchema: [ {
+  AttributeName: "ItemName",
+  KeyType: "HASH"
+}],
+    ProvisionedThroughput: { ... },
+    TableArn: "arn:aws:dynamodb:...:table/ShoppingCart",
+
+===== PAGINA 10 =====
+
+        TableName: "ShoppingCart",
+        TableSizeBytes: 0,
+        TableStatus: "CREATING"
+    }
+}
+
+Si hacemos un 'describe', es de esperar que el TableStatus cambie de estado. (CREATING → ACTIVE)
+
+$ aws dynamodb describe-table --table-name ShoppingCart --endpoint-url http://localhost:8000
+o
+$ aws dynamodb describe-table --table-name MusicCollection --endpoint-url http://localhost:8000
+
+...
+        TableStatus: "ACTIVE"
+...
+
+Partition Key = Hash (// PK no es Primary Key)
+Sort Key = Range
+
+
+
+DynamoDB’s Data Types
+
+===== PAGINA 11 =====
+
+Warning! No Empty Strings
+
+
+
+JSON en DynamoDB
+
+límites: Un ítem no puede superar los 400 KB
+
+Aquí hay un ejemplo de operación put que usa un JSON:
+
+$ aws dynamodb put-item --table-name Books \
+--item '{
+  "ISBN": { "N": "98765" },
+  "PublisherInfo": {"S": "Something" },
+  "PublishYear": { "N": "2012" },
+  "Title": { "S": "Moby Dick" }
+}'
+
+===== PAGINA 12 =====
+
+ JSON                                                        DynamoDB JSON
+
+ {                                                           {
+     "url": "https://aws.amazon.com/es/dynamodb/"                "url": {
+ }                                                                 "S": "https://aws.amazon.com/es/dynamodb/"
+                                                                 }
+                                                             }
+
+
+Basic Read/Write Operations
+
+$ aws dynamodb put-item --table-name ShoppingCart --item '{"ItemName": {"S": "Tickle Me Elmo"}}' --endpoint-url
+http://localhost:8000
+
+// Si les da error, probar de esta manera:
+$ aws dynamodb put-item --table-name ShoppingCart --item file://item1.json --endpoint-url http://localhost:8000
+donde 'item1.json' → {"ItemName": {"S": "Tickle Me Elmo"}}
+
+$ aws dynamodb put-item --table-name ShoppingCart --item '{"ItemName": {"S": "1975 Buick LeSabre"}}'
+--endpoint-url http://localhost:8000
+
+$ aws dynamodb put-item --table-name ShoppingCart --item '{"ItemName": {"S": "Ken Burns: the Complete Box Set"}}'
+--endpoint-url http://localhost:8000
+
+
+
+Si queremos ver todos los registros insertados, similar al SQL: SELECT * FROM ShoppingCart
+
+$ aws dynamodb scan --table-name ShoppingCart --endpoint-url http://localhost:8000
+{
+  "Count": 3,
+
+===== PAGINA 13 =====
+
+    "Items": [
+    {"ItemName": { "S": "1975 Buick LeSabre" } },
+    {"ItemName": { "S": "Ken Burns: the Complete Box Set" }},
+    {"ItemName": { "S": "Tickle Me Elmo" }}
+    ],
+    "ScannedCount": 3,
+    "ConsumedCapacity": null
+}
+
+Contando la cantidad de registros de una tabla (Select COUNT(*) from <table>)
+
+$ aws dynamodb scan --table-name ShoppingCart --select "COUNT" --endpoint-url http://localhost:8000
+{
+    "Count": 3,
+    "ScannedCount": 3,
+    "ConsumedCapacity": null
+}
+
+
+
+Buscando un ítem en particular.
+
+$ aws dynamodb get-item --table-name ShoppingCart --key '{"ItemName": {"S": "Tickle Me Elmo"}}' --endpoint-url
+http://localhost:8000
+{
+  "Item": {
+    "ItemName": { "S": "Tickle Me Elmo"}
+  }
+}
+
+si no funciona el comando anterior, usar este:
+
+===== PAGINA 14 =====
+
+$ aws dynamodb get-item --table-name ShoppingCart --key file://item1.json --endpoint-url http://localhost:8000
+
+Si queremos borrar un item
+
+$ aws dynamodb delete-item --table-name ShoppingCart --key '{"ItemName": {"S": "Tickle Me Elmo"}}' --endpoint-url
+http://localhost:8000
+o
+$ aws dynamodb delete-item --table-name ShoppingCart --key file://item1.json --endpoint-url http://localhost:8000
+
+Two Key Types, Many Possibilities
+DynamoDB es en esencia un key-value store
+   - hash key (la clave de acceso que también funciona como la clave para hacer las particiones. partition key)
+   - range key (la clave que que se usa para hacer búsquedas ordenadas)
+
+Imagine a table storing information about books in which each book item has two properties: a title (string) and the year published (number).
+
+$ aws dynamodb create-table --table-name Books --attribute-definitions AttributeName=Title,AttributeType=S
+AttributeName=PublishYear,AttributeType=N --key-schema AttributeName=Title,KeyType=HASH
+AttributeName=PublishYear,KeyType=RANGE --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1
+--endpoint-url http://localhost:8000
+
+En este caso, el título del libro se va a usar como clave de tipo HASH y la fecha de publicación como RANGE
+
+Vamos a crear 3 registros. Supongamos que el libro 'Moby Dick' tiene 3 ediciones.
+
+$ aws dynamodb put-item --table-name Books \
+--item '{
+  "Title": {"S": "Moby Dick"},
+  "PublishYear": {"N": "1851"},
+  "ISBN": {"N": "12345"} }' --endpoint-url http://localhost:8000
+
+===== PAGINA 15 =====
+
+$ aws dynamodb put-item --table-name Books --item file://book1.json --endpoint-url http://localhost:8000
+donde 'book1.json' → { "Title": {"S": "Moby Dick"}, "PublishYear": {"N": "1851"}, "ISBN": {"N": "12345"} }
+
+$ aws dynamodb put-item --table-name Books \
+--item '{
+  "Title": {"S": "Moby Dick"},
+  "PublishYear": {"N": "1971"},
+  "ISBN": {"N": "23456"},
+  "Note": {"S": "Out of print"}
+}' --endpoint-url http://localhost:8000
+
+$ aws dynamodb put-item --table-name Books \
+--item '{
+  "Title": {"S": "Moby Dick"},
+  "PublishYear": {"N": "2008"},
+  "ISBN": {"N": "34567"}
+}' --endpoint-url http://localhost:8000
+
+Si queremos buscar los libros con título "Moby Dick" que fueron publicados después de 1980.
+
+Consulta:
+$ aws dynamodb query --table-name Books \
+  --expression-attribute-values '{ ":title": {"S": "Moby Dick"}, ":year": {"N": "1980"} }' \
+  --key-condition-expression 'Title = :title AND PublishYear > :year' --endpoint-url http://localhost:8000
+
+Resultado:
+{
+  "Count": 1,
+  "Items": [{ "PublishYear": { "N": "2008" }, "ISBN": { "N": "34567" }, "Title": { "S": "Moby Dick" } } ],
+
+===== PAGINA 16 =====
+
+    "ScannedCount": 1,
+    "ConsumedCapacity": null
+}
+
+Si queremos proyectar solo el ISBN en la respuesta?
+
+$ aws dynamodb query --table-name Books \
+  --expression-attribute-values '{":title": {"S": "Moby Dick"},":year": {"N": "1900"}}' \
+  --key-condition-expression 'Title = :title AND PublishYear > :year' \
+  --projection-expression 'ISBN' \
+  --endpoint-url http://localhost:8000
+
+{
+    "Count": 2,
+    "Items": [ { "ISBN": { "N": "23456" } }, { "ISBN": { "N": "34567" } } ],
+    "ScannedCount": 2,
+    "ConsumedCapacity": null
+}
+
+¿Qué pasaría si proyecto un atributo que no está presente en todos los registros?
+
+$ aws dynamodb query --table-name Books \
+  --expression-attribute-values '{":title": {"S": "Moby Dick"},":year": {"N": "1900"}}' \
+  --key-condition-expression 'Title = :title AND PublishYear > :year' \
+  --projection-expression 'Note' \
+  --endpoint-url http://localhost:8000
+
+{
+    "Count": 2,
+    "Items": [
+
+===== PAGINA 17 =====
+
+      { "Note": { "S": "Out of print" } },
+      {}                                                   # → el 2do registro, no tiene el atributo 'Note'
+    ],
+    "ScannedCount": 2,
+    "ConsumedCapacity": null
+}
+
+
+
+Momento de reflexión.
+  1. Cuando creamos la tabla, solo habíamos mencionado 2 atributos, el título y el año de publicación.
+  2. Cuando insertamos registros, agregamos en el ítem (o documento) otros atributos (ISBN y Nota).
+         a. En el DB-ranking dice que el data scheme es schema-free, Uds que piensan?
+  3. El JSON no es como el que veníamos usando en MongoDB o CouchDB. (data typing: yes o no)
+
+Indices
+En DynamoDB, más allá del partition key (hash key y el range key) los índices secundarios pueden ser de 2 tipos: local (LSI) o global (GSI).
+
+Local Secondary Indexes
+Local secondary indexes (LSIs) let you query or scan attributes outside of your primary hash and sort key.
+
+===== PAGINA 18 =====
+
+$ aws dynamodb query --table-name BonestormData \
+  --expression-attribute-values '{":user": {"S": "h4x0rjimduggan"},":score": {"N": "800"}}' \
+  --key-condition-expression 'Username = :user AND HighScore > :score' \
+  --projection-expression 'Date'
+
+Always bear in mind that LSIs can’t be modified after a table has been created, so be extra careful to plan for them in advance
+
+
+
+Global Secondary Indexes
+Global secondary indexes (GSIs) are indexes that aren’t restricted to items with the same partition key. The “global” here essentially means
+“any attribute in the table.”
+
+Una cosa importante a tener en cuenta es que los GSI se pueden modificar después de que se haya creado una tabla, mientras que los LSI
+no.
+
+===== PAGINA 19 =====
+
+$ aws dynamodb query --table-name BonestormData \
+  --expression-attribute-values '{":avatar": {"S": "Lion"}}' \
+  --key-condition-expression 'Avatar = :avatar' \
+  --projection-expression 'Username, Date'
+
+===== PAGINA 20 =====
+
+Fin dia 1
+
+Dia 2
+
+Building a Streaming Data Pipeline
+
+$ aws dynamodb create-table --cli-input-json file://sensor-data-table.json
+
+file: dynamodb/sensor-data-table.json
+ {
+     "TableName": "SensorData",
+     "KeySchema": [
+       {
+         "AttributeName": "SensorId",
+         "KeyType": "HASH"
+       },
+
+===== PAGINA 21 =====
+
+ {
+     "AttributeName": "CurrentTime",
+     "KeyType": "RANGE"
+  }
+],
+"AttributeDefinitions": [
+  {
+    "AttributeName": "SensorId",
+    "AttributeType": "S"
+  },
+  {
+    "AttributeName": "CurrentTime",
+    "AttributeType": "N"
+  },
+  {
+    "AttributeName": "Temperature",
+    "AttributeType": "N"
+  }
+],
+"LocalSecondaryIndexes": [
+  {
+    "IndexName": "TemperatureIndex",
+    "KeySchema": [
+      {
+        "AttributeName": "SensorId",
+        "KeyType": "HASH"
+      },
+      {
+        "AttributeName": "Temperature",
+        "KeyType": "RANGE"
+      }
+    ],
+    "Projection": {
+      "ProjectionType": "ALL"
+    }
+  }
+
+===== PAGINA 22 =====
+
+     ],
+     "ProvisionedThroughput": {
+       "ReadCapacityUnits": 2,
+       "WriteCapacityUnits": 2
+     }
+ }
+
+
+                                                                 SensorData
+
+                                                     KeySchema
+
+                                        SensorId                 CurrentTime       Temperature
+
+                                         HASH                      RANGE
+
+                                           S                         N                  N
+
+                                  LocalSecondaryIndexes                        LocalSecondaryIndexes
+
+
+
+
+Throughput
+
+1 = 4 para las Lecturas
+1 = 1 para las Escrituras
+
+$ aws dynamodb create-table \
+ --table-name ShoppingCart \
+ --attribute-definitions AttributeName=ItemName,AttributeType=S \
+ --key-schema AttributeName=ItemName,KeyType=HASH \
+ --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1
+
+===== PAGINA 23 =====
+
+Las unidades de capacidad de lectura y escritura se manejan de manera diferente en DynamoDB.
+Las unidades de capacidad de lectura (RCU) se miden en unidades de 4 KB por segundo.
+Las unidades de capacidad de escritura (WCU) se miden en unidades de 1 KB por segundo.
+
+Strongly consistent reads are about twice as expensive as eventually consistent reads.
+
+https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ProvisionedThroughput.html
+
+La configuración de rendimiento de una tabla no está fija en todo momento y se puede actualizar a voluntad.
+Podemos empezar con RCU=1, WCU=1 e ir modificando estos valores si notamos que necesitamos una mejor performance.
+
+
+
+
+Data Streams vs Procesamiento Batch
+
+A Real Time, Streaming, Functional Data Pipeline
+
+===== PAGINA 24 =====
+
+file: dynamodb/ProcessKinesisRecords.js
+
+var AWS = require('aws-sdk');
+var DynamoDB = new AWS.DynamoDB({
+  apiVersion: '2012-08-10',
+  region: 'us-east-1',
+});
+
+exports.kinesisHandler = function(event, context, callback) {
+  // We only need to handle one record at a time
+  var kinesisRecord = event.Records[0];
+
+===== PAGINA 25 =====
+
+// The data payload is base 64 encoded and needs to be decoded to a string
+var data   =
+  Buffer.from(kinesisRecord.kinesis.data, 'base64').toString('ascii');
+// Create a JSON object out of that string
+var obj    = JSON.parse(data);
+var sensorId    = obj.sensor_id,
+    currentTime = obj.current_time,
+    temperature = obj.temperature;
+
+// Define the item to write to DynamoDB
+var item = {
+  TableName: "SensorData",
+  Item: {
+    SensorId: { S: sensorId },
+    CurrentTime: { N: currentTime.toString() },
+    Temperature: { N: temperature.toString() }
+  }
+};
+
+// Perform a put operation, logging both successes and failures
+DynamoDB.putItem(item, function(err, data) {
+  if (err) {
+    console.log(err, err.stack);
+    callback(err.stack);
+  } else {
+    console.log(data);
+    callback(null, data);
+  }
+});
+
+===== PAGINA 26 =====
+
+}
+
+… muchos pasos de configuración de otros productos (!=DynamoDB), Kinesis, lambda, y detalles de AWS.
+
+$ export DATA=$( echo '{ "sensor_id":"sensor-1", "temperature":99.9,"current_time":123456789 }' | base64)
+$ export STREAM_NAME=temperature-sensor-data
+$ aws kinesis put-record \
+  --stream-name ${STREAM_NAME} \
+  --partition-key sensor-data \
+  --data ${DATA}
+
+$ aws dynamodb scan --table-name SensorData
+{
+  "Count": 1,
+  "Items": [
+    { "CurrentTime": { "N": "123456789" },
+      "Temperature": { "N": "99.9" },
+      "SensorId": { "S": "sensor-1" }
+    }
+  ]
+}
+
+# Tarea
+
+Find one or more DynamoDB client libraries for your favorite programming language.
+Explore how to perform CRUD operations using that library.
+
+Supported programming languages: .Net, ColdFusion, Erlang, Groovy, Java, JavaScript, Perl, PHP, Python, Ruby.
+Java → Getting Started with Java and DynamoDB - Amazon DynamoDB
+Python → Getting Started Developing with Python and DynamoDB - Amazon DynamoDB
+
+===== PAGINA 27 =====
+
+boto3 Configuration (cliente python)
+Quickstart — Boto3 documentation
+
+boto3 & DynamoDB
+Boto3 documentation
+
+You can create the credential file yourself. By default, its location is at ~/.aws/credentials:
+
+[default]
+aws_access_key_id = YOUR_ACCESS_KEY
+aws_secret_access_key = YOUR_SECRET_KEY
+
+You may also want to set a default region. This can be done in the configuration file. By default, its location is at ~/.aws/config:
+
+[default]
+region = us-east-1
+output = json
+
+Alternatively, you can pass a region_name when creating clients and resources.
+
+Python
+   1. Create a table
+   2. Load sample data
+   3. Create, Read, Update, and Delete an Item
+   4. Query and Scan the Data
+   5. (Optional) Delete the Table
+
+Fin del dia 2
+On Day 3, we’ll begin pumping data into Kinesis and letting Lambda do its magic.
+
+===== PAGINA 28 =====
+
+Dia 3
+
+Building an “Internet of Things” System Around DynamoDB
+
+Mock Data Inputs
+dynamodb/upload-sensor-data.rb
+https://media.pragprog.com/titles/pwrdata/code/dynamodb/upload-sensor-data.rb
+
+Para poder correr el script, necesitamos instalar algunas gemas de ruby.
+$ gem install random-walk aws-sdk
+
+1 sensor, 1000 muestras.
+$ ruby upload-sensor-data.rb temp-sensor-1 1000
+
+10 sensores, 1000 muestras.
+$ for n in {1..10}; do
+     ruby upload-sensor-data.rb sensor-${n} 1000 &
+  done
+
+Para ver cuántos registros han ingresado.
+$ aws dynamodb scan --table-name SensorData --query Count
+
+An SQL Querying Interface (...dynamoDB → S3 ← Athena)
+
+===== PAGINA 29 =====
+
+DynamoDB → S3 (Simple Storage Service)
+
+CREATE EXTERNAL TABLE sensor_data (
+  sensorid struct<s:string>,
+  currenttime struct<n:bigint>,
+  temperature struct<n:float>
+)
+  ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+  with serdeproperties ('paths'='SensorId,CurrentTime,Temperature')
+  LOCATION 's3://YOUR-S3-BUCKET/';
+
+===== PAGINA 30 =====
+
+Amazon Athena - https://aws.amazon.com/athena/
+Start querying data instantly. Get results in seconds. Pay only for the queries you run.
+
+
+
+
+sensor-data → sensor-data-YYYY-MM-DD
+
+Una sugerencia que hacen en el libro, es dividir la tabla, para que cada día pueda estar alojado en un bucket diferente.
+
+Fin dia 3.
+
+===== PAGINA 31 =====
+
+
+
+===== PAGINA 32 =====
+
+DynamoDB’s Strengths                                                       Fortalezas de DynamoDB
+The strengths of DynamoDB have been on display throughout this             Las fortalezas de DynamoDB se han exhibido a lo largo de este
+chapter. It enables you to skip all the installation and setup steps and   capítulo. Le permite omitir todos los pasos de instalación y
+get started building immediately. And if you build something small,        configuración y comenzar a construir de inmediato. Y si construyes
+there are few intrinsic limits to how big it can get (if, of course, you   algo pequeño, hay pocos límites intrínsecos a lo grande que puede
+have the budget for it). DynamoDB can be tricky in places, especially      llegar a ser (si, por supuesto, tienes el presupuesto para ello).
+when it comes to things like capacity provisioning, planning for           DynamoDB puede ser complicado en algunos lugares,
+indexes, and coming up with a data model that enables you to take          especialmente cuando se trata de cosas como el aprovisionamiento
+advantage of DynamoDB’s performance and scalability. But getting           de capacidad, la planificación de índices y la creación de un modelo
+past the tricky parts unlocks a lot of possibilities.                      de datos que le permita aprovechar el rendimiento y la escalabilidad
+Although DynamoDB requires you to give up some of the querying             de DynamoDB. Pero superar las partes difíciles abre muchas
+power of relational databases, its data and querying models provide        posibilidades.
+some powerful constructs, such as indexes and range queries, that          Aunque DynamoDB requiere que renuncies al poder de consulta de
+you won’t find in a lot of NoSQL databases. And if you run into            las bases de datos relacionales, sus datos y modelos de consulta
+barriers, such as the inability to write SQL-style queries for tables,     proporcionan algunas construcciones poderosas, como índices y
+you may be able to use an external service to fill in the gaps, as we      consultas de rango, que no encontrarás en muchas bases de datos
+did on Day 3. Beyond all of this, DynamoDB’s feature set continues         NoSQL. Y si se encuentra con barreras, como la incapacidad de
+to expand, as does the constellation of services surrounding               escribir consultas de estilo SQL para tablas, puede usar un servicio
+DynamoDB in the AWS ecosystem.                                             externo para llenar los vacíos, como lo hicimos el día 3. Más allá de
+                                                                           todo esto, el conjunto de características de DynamoDB continúa
+                                                                           expandiéndose, al igual que la constelación de servicios que rodean
+                                                                           a DynamoDB en el ecosistema de AWS.
+
+
+DynamoDB’s Weaknesses                                                      Debilidades de DynamoDB
+The drawbacks presented by DynamoDB are directly reminiscent of            Los inconvenientes presentados por DynamoDB recuerdan
+other NoSQL databases. Despite some interesting querying and               directamente a otras bases de datos NoSQL. A pesar de algunas
+modeling constructs, you’re probably better off using Postgres or          interesantes construcciones de consulta y modelado, probablemente
+another relational database unless you know for sure that you’re           sea mejor usar Postgres u otra base de datos relacional a menos
+
+===== PAGINA 33 =====
+
+dealing with a DynamoDB-shaped problem (or maybe an                       que sepa con certeza que está lidiando con un problema en forma
+HBase-shaped problem, or Mongo, and so on). Even if you have a            de DynamoDB (o tal vez un problema en forma de HBase, o Mongo,
+use case that truly calls for a big NoSQL database, you may have          y así en). Incluso si tiene un caso de uso que realmente requiera una
+trouble getting your data model to mesh well with DynamoDB’s              gran base de datos NoSQL, es posible que tenga problemas para
+partitioning system. And as always, there’s the cost. Any database        que su modelo de datos se adapte bien al sistema de
+you use is going to cost money somehow, but DynamoDB and others           particionamiento de DynamoDB. Y como siempre, está el costo.
+don’t always make financial sense. There may be times when it             Cualquier base de datos que se use va a costar dinero de alguna
+makes sense to run databases yourself, maybe on your own                  manera, pero DynamoDB y otros no siempre tienen sentido
+hardware and maybe in the cloud. Caveat emptor.                           financiero. Puede haber ocasiones en que tenga sentido ejecutar
+                                                                          bases de datos usted mismo, tal vez en su propio hardware y tal vez
+                                                                          en la nube. El comprador asume el riesgo.
+
+
+Parting Thoughts                                                          Pensamientos finales
+Cloud databases aren’t everyone’s cup of tea. They require a lot of       Las bases de datos en la nube no son la taza de té para todos.
+trust—trust in massive systems whose internals you can’t see and          Requieren mucha confianza: confianza en sistemas masivos cuyas
+trust in the future economic prospects of cloud providers themselves.     partes internas no se pueden ver y confían en las perspectivas
+These and other drawbacks are real, but there are some major              económicas futuras de los propios proveedores de la nube. Estos y
+upsides, as we hope to have shown in this chapter. We urge anybody        otros inconvenientes son reales, pero hay algunas ventajas
+with a strong interest in databases to give them a try. Even if you       importantes, como esperamos haber mostrado en este capítulo.
+don’t ever have a use case that requires a database like DynamoDB,        Instamos a cualquiera que tenga un gran interés en las bases de
+we think that they’re greatly empowering for developers and just          datos a probarlo. Incluso si nunca tiene un caso de uso que requiera
+downright fun. They turn your humble little laptop into a very powerful   una base de datos como DynamoDB, creemos que son muy
+orchestration platform.                                                   motivadores para los desarrolladores y simplemente divertidos.
+DynamoDB is a good place to start but we focused on it here mostly        Convierten su humilde laptop en una plataforma de orquestación
+due to its influence and market share. There are many other options.      muy poderosa.
+If you want a DynamoDB-style experience with a SQL favor, have a          DynamoDB es un buen lugar para comenzar, pero nos centramos
+look at Google’s BigQuery or Amazon’s Redshift. For globally              aquí principalmente debido a su influencia y participación en el
+distributed databases, try Google Cloud Spanner, CockroachDB, or          mercado. Hay muchas otras opciones. Si desea una experiencia de
+FaunaDB. We reckon that the database landscape is starting to lean        estilo DynamoDB con un favor de SQL, eche un vistazo a BigQuery
+strongly in the direction of the cloud and the ops-free lifestyle. The    de Google o Redshift de Amazon. Para bases de datos distribuidas
+next edition of this book may even feature several cloud databases.       globalmente, pruebe Google Cloud Spanner, CockroachDB o
+
+===== PAGINA 34 =====
+
+                                                                       FaunaDB. Consideramos que el panorama de la base de datos está
+                                                                       comenzando a inclinarse fuertemente hacia la nube y el estilo de
+                                                                       vida libre de operaciones. La próxima edición de este libro puede
+                                                                       incluso presentar varias bases de datos en la nube.
+
+
+
+Bonus track:
+
+   ●   Tables, Items, and Attributes - Amazon DynamoDB Core Concepts | Amazon Web Services
+
+
+
+En la última charla que tuvimos con la gente de Etermax, nos comentaron sobre este tema: Single-Table Design with DynamoDB
+    ● https://www.alexdebrie.com/posts/dynamodb-single-table/
+    ● The DynamoDB Book by Alex DeBrie, Cap. 8, pag. 144
+
+Mas info: https://aprendiendoaws.com/
+  ● Amazon DynamoDB :: AWS Entrenamientos
+
+Link directo a los 4 videos (via Kevin Cortés Rodríguez ex-alumno de Ing. Informática del ITBA)
+    ● https://aprendiendoaws.com/media/videos/serverless-dynamodb-part01.mp4
+    ● https://aprendiendoaws.com/media/videos/serverless-dynamodb-part02.mp4
+    ● https://aprendiendoaws.com/media/videos/serverless-dynamodb-part03.mp4
+    ● https://aprendiendoaws.com/media/videos/serverless-dynamodb-part04.mp4

@@ -45,7 +45,7 @@ La fuente oficial prevalece ante un conflicto. No ocultar divergencias: registra
 - `notas/bandeja/`: entrada del usuario; conservar contenido al procesar.
 - `notas/procesadas/`: archivo histórico inmutable salvo pedido explícito.
 - `practica/`: código y respuestas individuales a guías.
-- `entregas/`: no usar hasta que exista el trabajo especial grupal.
+- `entregas/`: trabajo obligatorio grupal. La consigna vigente es el TPO FarmaRed.
 
 ## Flujos reconocibles
 

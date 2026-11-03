@@ -6,7 +6,9 @@ La persistencia políglota aplica a datos la idea de usar la tecnología más ad
 
 La decisión no se reduce a “relacional o NoSQL”. Debe considerar tipo de modelo, durabilidad, disponibilidad, consistencia, escalabilidad, complejidad operativa y capacidades del equipo. Cuantos más motores se incorporan, mayor es el costo de integrar, desplegar, observar, respaldar y mantener. [C01, p. 6]
 
-Para las familias NoSQL, escalabilidad y CAP, continuar en [NoSQL y CAP](15-nosql-y-cap.md); para la elección entre embebidos y referencias, en [modelado MongoDB](16-mongodb-modelado.md). Las nuevas unidades desarrollan decisiones que dependen de la aplicación y distinguen replicación de sharding. [T13, pp. 9, 21–30; T14, pp. 2–8; C02, pp. 1–2]
+Para las familias NoSQL, escalabilidad y CAP, continuar en [NoSQL y CAP](15-nosql-y-cap.md); para la elección entre embebidos y referencias, en [modelado MongoDB](16-mongodb-modelado.md). Las unidades posteriores desarrollan grafos, clave-valor y un servicio administrado: [Neo4j](23-neo4j-grafos-y-cypher.md), [Redis](24-redis-clave-valor.md) y [DynamoDB](25-dynamodb.md). [T13, pp. 9, 21–30; T14, pp. 2–8; C02, pp. 1–2; T17; T18; T20]
+
+El TPO pide una arquitectura que combine al menos dos motores NoSQL de paradigmas distintos y que justifique cada elección. La consigna está en [FarmaRed](../../entregas/tpo-farmared/README.md). [P18, p. 5]
 
 ## Docker en dos conceptos
 

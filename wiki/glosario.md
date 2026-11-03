@@ -106,3 +106,31 @@ Las precisiones actuales de CAP, validación, transacciones y métodos de MongoD
 | Tombstone | Marca de borrado que permite representar eliminaciones sin modificar SSTables existentes. | [T16, pp. 38–39] |
 
 Ver [modelado/CQL](temas/20-cassandra-modelado-y-cql.md), [almacenamiento/Bloom](temas/21-cassandra-almacenamiento-y-bloom.md) y [consistencia/DIGEST](temas/22-cassandra-consistencia-y-digest.md). Los complementos del manual se distinguen allí de las afirmaciones de cátedra.
+
+## Neo4j
+
+| Término | Definición breve | Fuente |
+|---|---|---|
+| Bookmark | Punto de progreso de una transacción que una lectura posterior puede esperar en una réplica. | [C06, p. 10] |
+| Cypher | Lenguaje de consulta de Neo4j basado en patrones de nodos y relaciones. | [T17, pp. 9, 19] |
+| Grafo de propiedad | Grafo con etiquetas y propiedades en nodos y relaciones; puede incluir peso. | [T17, p. 4] |
+| Label | Rol o tipo asignado a un nodo o a una relación. | [T17, p. 18] |
+| `MERGE` | Busca el patrón completo y lo crea si no existe. | [C06, p. 2] |
+| Quórum Raft | Mayoría de primarios necesaria para elegir líder y confirmar escrituras. | [C06, pp. 7–9] |
+
+Ver [grafos y Cypher](temas/23-neo4j-grafos-y-cypher.md). La clasificación CAP de Neo4j no es única entre T17 y T19; está en [dudas](dudas-y-conflictos.md).
+
+## Redis y DynamoDB
+
+| Término | Definición breve | Fuente |
+|---|---|---|
+| AOF | Registro de cada escritura de Redis, usado para reconstruir el estado al reiniciar. | [T18, p. 17] |
+| Clave de partición | Hash key de DynamoDB: reparte los ítems y forma parte de su identificación. | [T20, p. 10] |
+| GSI | Índice secundario global de DynamoDB, no atado a la misma partition key y agregable después. | [T20, pp. 17–18] |
+| Ítem | Unidad de DynamoDB análoga a una fila, con tope de 400 KB en el material. | [T20, p. 4] |
+| LSI | Índice secundario local: otra sort key dentro de la misma partition key; se declara al crear la tabla. | [T20, pp. 17–18] |
+| RDB | Snapshot periódico del conjunto de datos de Redis. | [T18, p. 17] |
+| Sentinel | Proceso que vigila maestros y réplicas de Redis y promociona una réplica ante una caída. | [T18, pp. 25–27] |
+| Sort key | Range key de DynamoDB: ordena y filtra dentro de una partición. | [T20, p. 10] |
+
+Ver [Redis](temas/24-redis-clave-valor.md) y [DynamoDB](temas/25-dynamodb.md).

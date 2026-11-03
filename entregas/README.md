@@ -1,5 +1,5 @@
 # Entregas
 
-Espacio reservado para el futuro trabajo práctico especial grupal. Las guías TP 1–3 son individuales y no entregables, por lo que sus resoluciones permanecen en `practica/`.
+El trabajo obligatorio grupal es el TPO FarmaRed. La consigna oficial es [P18](../material/catedra/practica/tpo-farmared.pdf). El repositorio del grupo es [TPO_BD2_FarmaRed](https://github.com/andresgarbarz/TPO_BD2_FarmaRed) y la copia local está en `tpo-farmared/`. Esa carpeta no se versiona dentro de esta wiki.
 
-Cuando la cátedra publique la consigna grupal, crear aquí una carpeta con su fuente, requisitos, decisiones, código, pruebas y versión final, sin mezclar borradores con el entregable.
+Las guías TP son individuales y no son esta entrega. Sus resoluciones permanecen en `practica/`.

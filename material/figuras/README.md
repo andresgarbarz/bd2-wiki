@@ -87,3 +87,16 @@ Se extrajeron las cuatro imágenes embebidas de P14 a su resolución original co
 - [P14-p2-esquema-voluntarios.png](P14-p2-esquema-voluntarios.png): esquema de Voluntarios con tipos PostgreSQL (`character varying`, `numeric`); el mismo modelo que P08 con otra notación de tipos. [P14, p. 2]
 - [P14-p3-esquema-peliculas.png](P14-p3-esquema-peliculas.png): esquema de Películas en Vertabelo; el mismo modelo que SQL01. [P14, p. 3]
 - [P14-p4-consulta-hospitales.png](P14-p4-consulta-hospitales.png): la consulta SQL sobre `hospitales` que el ejercicio de MongoDB pide traducir. [P14, p. 4]
+
+## Neo4j, Redis y DynamoDB (incorporación 2026-11-03)
+
+Se leyó el texto completo de T17, T18, T19, T20, C06, P15, P16, P17 y P18. Estas páginas no quedan en el texto extraído; se conservó la página renderizada:
+
+- [T17-p9-patron-likes.png](T17-p9-patron-likes.png): patrón Cypher `(a)-[:LIKES]->(b)`. [T17, p. 9]
+- [T17-p12-red-amigos.png](T17-p12-red-amigos.png): red de amistad alrededor de You, con LIKE hacia Neo4j y WORKED_WITH. [T17, p. 12]
+- [T17-p13-shortestpath.png](T17-p13-shortestpath.png): `shortestPath` con `[:FRIEND*..5]`. [T17, p. 13]
+- [T17-p17-grafo-propiedades.png](T17-p17-grafo-propiedades.png): nodo, label, relación y propiedades. [T17, p. 17]
+- [T18-p5-ranking-clave-valor.png](T18-p5-ranking-clave-valor.png): ranking DB-Engines de agosto/septiembre de 2020 y 2021. [T18, p. 5]
+- [T19-p2-familias.png](T19-p2-familias.png): burbujas de familias, con Redis como clave-valor. [T19, p. 2]
+- [T20-p31-guia-visual-cap.png](T20-p31-guia-visual-cap.png): guía visual CAP; Redis en CP y Dynamo (el paper) en AP. [T20, p. 31]
+- [P16-p2-peliculas-imdb.png](P16-p2-peliculas-imdb.png): tabla de películas y scores del TP 12. [P16, p. 2]

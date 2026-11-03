@@ -39,7 +39,7 @@ notas/
   procesadas/         originales ya integrados, sin reescritura
 practica/             espacio individual para resolver las guías
 laboratorio/          MySQL local reproducible
-entregas/             reservado para el futuro trabajo grupal
+entregas/             trabajo obligatorio grupal (TPO FarmaRed)
 .agents/skills/       flujos reutilizables de Codex
 .claude/commands/     comandos equivalentes de Claude Code
 ```
