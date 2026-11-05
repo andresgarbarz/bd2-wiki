@@ -2,7 +2,7 @@
 
 Fecha: 3 de noviembre de 2026.
 
-Los motores quedan cerrados. El modelo físico (campos de cada colección, nodos y relaciones) y el reparto de tareas entre los cuatro integrantes siguen abiertos. No hay código de consultas ni `docker-compose` todavía.
+Los motores quedan cerrados. El modelo físico (campos de cada colección, nodos y relaciones) sigue abierto. No hay código de consultas ni `docker-compose` todavía.
 
 ## Decisión
 
@@ -97,7 +97,6 @@ Documentos, grafos, clave-valor y columnar cubren las cinco filas de la consigna
 - Etiquetas, propiedades y tipos de relación del grafo.
 - Registros adicionales (al menos diez por colección o tabla, con casos borde) y el script de carga idempotente.
 - `docker-compose` y el ajuste del devcontainer para levantar MongoDB y Neo4j en Codespaces.
-- Reparto de las consultas entre los cuatro integrantes.
 
 ## Fuentes
 
