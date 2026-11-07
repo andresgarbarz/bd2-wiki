@@ -2,7 +2,7 @@
 
 Fecha: 3 de noviembre de 2026.
 
-Los motores quedan cerrados. El modelo físico (campos de cada colección, nodos y relaciones) sigue abierto. No hay código de consultas ni `docker-compose` todavía.
+Los motores quedan cerrados. El 7 de noviembre se cerró el modelo de las colecciones y quedaron hechos el entorno, la carga y las consultas 13, 14 y 15. Para continuar el código, [avances-tpo.md](avances-tpo.md). Para redactar el informe de esa parte, [decisiones-escrituras.md](decisiones-escrituras.md). Las etiquetas del grafo siguen abiertas.
 
 ## Decisión
 
@@ -93,10 +93,9 @@ Documentos, grafos, clave-valor y columnar cubren las cinco filas de la consigna
 
 ## Qué falta cerrar
 
-- Campos de cada colección, y si el proveedor va embebido en el producto o referenciado. Los ítems de la venta ya quedan embebidos.
-- Etiquetas, propiedades y tipos de relación del grafo.
-- Registros adicionales (al menos diez por colección o tabla, con casos borde) y el script de carga idempotente.
-- `docker-compose` y el ajuste del devcontainer para levantar MongoDB y Neo4j en Codespaces.
+- Etiquetas, propiedades y tipos de relación del grafo. `reconstruir`, `upsert_cliente`, `upsert_venta` y `upsert_receta` ya están declaradas y vacías.
+- Registros adicionales: al menos diez por colección, con casos borde. La carga ya los toma de `datasets/extra/`.
+- Las consultas 1 a 12.
 
 ## Fuentes
 

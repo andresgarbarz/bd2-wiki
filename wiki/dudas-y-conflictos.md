@@ -303,6 +303,8 @@ Referencias externas: [release notes oficiales de MySQL 9.7](https://dev.mysql.c
 
 - La carátula fija grupos de 4 integrantes. El requisito del historial de commits pide evidenciar la participación de “los tres integrantes”. [P18, pp. 1, 7]
 - **Decisión:** conservar las dos cifras. No elegir una hasta que la cátedra lo aclare.
+- La consulta 15 dice «dada una venta registrada» y no nombra el cambio de estado. En esta parte se lee como el paso de Pendiente a Completada: `fecha` pasa al día de la entrega y la reserva queda en `fecha_registro`. La consigna llama domicilio a ciudad y provincia; el ABM las modifica como contacto. [P18, pp. 5–6]
+- **Decisión:** dejar los dos supuestos explícitos en el informe. El detalle está en [decisiones-escrituras.md](../entregas/decisiones-escrituras.md).
 - Los nueve CSV de la consigna están en `material/entrada/datasets_farmared/` y se copiaron al repositorio del TPO. Los conteos coinciden con P18: 8 clientes, 5 sucursales, 7 farmacéuticos, 5 proveedores, 13 productos, 18 lotes, 9 recetas, 16 ventas y 22 detalles. [P18, pp. 1–4]
 - **Vacío:** no hay clase 19 en este lote. La secuencia recibida salta de la clase 18 a la clase 20.
 - Las guías P15, P16 y P17 descargan `neo4j`, `redis` y `amazon/dynamodb-local` sin etiqueta de versión. No se levantaron esos contenedores al incorporar. [P15, p. 1; P16, p. 1; P17, p. 1]
