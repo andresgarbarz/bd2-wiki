@@ -2,7 +2,7 @@
 
 Fecha: 3 de noviembre de 2026.
 
-Los motores quedan cerrados. El 7 de noviembre se cerró el modelo de las colecciones y quedaron hechos el entorno, la carga y las consultas 13, 14 y 15. El 10 de noviembre se implementaron y verificaron Q01, Q05, Q07, Q08, Q09 y Q11. Para continuar el código, [avances-tpo.md](avances-tpo.md). Para redactar el informe de escrituras, [decisiones-escrituras.md](decisiones-escrituras.md), y para las seis lecturas, [informe-consultas-lectura.md](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/7a4fad5777ca2e77a12a866bd91e0b8351bec1c3/docs/informe-consultas-lectura.md). Las etiquetas del grafo siguen abiertas.
+Los motores quedan cerrados. El 7 de noviembre se cerró el modelo de las colecciones y quedaron hechos el entorno, la carga y las consultas 13, 14 y 15. El 10 de noviembre se implementaron y verificaron Q01, Q05, Q07, Q08, Q09 y Q11. Para continuar el código, [avances-tpo.md](avances-tpo.md). Para redactar el informe de escrituras, [decisiones-escrituras.md](decisiones-escrituras.md), y para las seis lecturas, [informe-consultas-lectura.md](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/11c9d1b622b2c15a4f2ccc070cf1862ff02d129f/docs/informe-consultas-lectura.md). Las etiquetas del grafo siguen abiertas.
 
 ## Decisión
 

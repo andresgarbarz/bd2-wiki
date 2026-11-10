@@ -1,6 +1,6 @@
 # Q01, Q05, Q07, Q08, Q09 y Q11 — implementación y verificación
 
-Revisión: 10 de noviembre de 2026. Base del trabajo: `main`, commit `383168c`, del [repositorio del grupo](https://github.com/andresgarbarz/TPO_BD2_FarmaRed). Consigna completa: [P18](../material/catedra/practica/tpo-farmared.pdf), siete páginas. Las seis consultas están implementadas, verificadas y publicadas en [feat/consultas-lectura-mongodb](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/tree/feat/consultas-lectura-mongodb), hasta el commit `7a4fad5`. Cada consulta tiene su commit con pruebas; el [historial resumido](avances-tpo.md#commits-de-las-seis-lecturas) permite retomarlas por separado. El [informe de lecturas](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/7a4fad5777ca2e77a12a866bd91e0b8351bec1c3/docs/informe-consultas-lectura.md) contiene los resultados ejecutados.
+Revisión: 10 de noviembre de 2026. Base del trabajo: `main`, commit `383168c`, del [repositorio del grupo](https://github.com/andresgarbarz/TPO_BD2_FarmaRed). Consigna completa: [P18](../material/catedra/practica/tpo-farmared.pdf), siete páginas. Las seis consultas están implementadas, verificadas y publicadas en [feat/consultas-lectura-mongodb](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/tree/feat/consultas-lectura-mongodb), hasta el commit `11c9d1b`. Cada consulta tiene su commit con pruebas; el [historial resumido](avances-tpo.md#commits-de-las-seis-lecturas) permite retomarlas por separado. El [informe de lecturas](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/11c9d1b622b2c15a4f2ccc070cf1862ff02d129f/docs/informe-consultas-lectura.md) contiene los resultados ejecutados.
 
 Los CSV provistos se encuentran en [datasets/](../datasets/), en la raíz de esta wiki. Sus nueve archivos son idénticos byte a byte a `entregas/tpo-farmared/datasets/`; por eso los controles de esta página sirven para ambas copias. El cargador lee la carpeta interna del proyecto. Las rutas `src/`, `docs/` y `datasets/extra/` de este documento son relativas al repositorio del grupo.
 
@@ -20,7 +20,7 @@ Estado comprobado por lectura del código:
 | Grafo | Cuatro funciones de proyección pendientes |
 | Datos adicionales | No existe `datasets/extra/`; falta cumplir los diez registros propios por colección/tabla exigidos [P18, pp. 1, 6] |
 | Informe | Existen los documentos de entorno/escrituras y de las seis lecturas; faltan diagramas y consolidar el informe final [P18, p. 7] |
-| Pruebas | Verificador de CSV y 16 pruebas de integración de las seis lecturas, con resultados y bordes |
+| Pruebas | Verificador de CSV y 17 pruebas de integración de las seis lecturas, con resultados y bordes |
 
 ## Qué pide cada consulta
 
@@ -40,7 +40,7 @@ Los requisitos de esta tabla están en [P18, p. 6]; los estados de venta y los p
 - Reutilizar `src/db.py`: `base()` y `hoy()`. Los ids oficiales están tanto en `_id` como en el campo `id_*`; las referencias conservan los nombres del CSV. Fechas BSON `Date`, booleanos reales e importes enteros.
 - Q05 y Q11 usan `ventas.fecha`, no `fecha_registro`. Q15 mueve `fecha` al día de la entrega cuando completa una reserva; el informe ya declara ese supuesto en [decisiones-escrituras.md](decisiones-escrituras.md).
 - Las fechas de producción deben salir del sistema, nunca del 13/10/2026 de referencia ni de los ejemplos de esta página. [P18, pp. 1, 6]
-- La consigna no precisa la inclusión exacta del límite de 60 días. Para los controles de abajo se tomó `hoy() - 60 días` inclusivo hasta hoy inclusivo. Documentar la convención al implementar y probar el día del corte y una fecha futura. Es una decisión de implementación, no una precisión atribuida a la cátedra.
+- La consigna no precisa la inclusión exacta del límite de 60 días. Se toman 60 días incluyendo hoy: desde `hoy() - 59 días` inclusive hasta mañana exclusivo. La revisión corrigió la convención anterior, que incluía 61 fechas. Es una decisión de implementación, no una precisión atribuida a la cátedra.
 - Para Q11, el plan propone una vista de ingresos agrupados por farmacéutico, año y mes. `ejecutar()` seleccionará el año y mes de `hoy()`, sin guardar límites de fechas fijos en la definición. Es equivalente a tomar desde el primer día del mes inclusivo hasta el primer día del mes siguiente exclusivo. Probar diciembre/enero. La elección de una vista mensual general más el filtro en Q11 es una decisión del proyecto para resolver la «vista agregada» pedida por P18.
 - Q07 no especifica desempates. Propuesta de implementación: unidades descendentes e id de producto ascendente para obtener hasta cinco resultados reproducibles.
 - Cada `ejecutar()` devuelve `list[dict]`; las seis no requieren argumentos de negocio. Los docstrings documentan propósito, entrada, retorno y motor. Las pruebas controlan el reloj sin fijar fechas en el código productivo. [P18, pp. 6–7]
@@ -49,7 +49,7 @@ Los criterios de límites temporales y desempate anteriores son propuestas del p
 
 ## Casos de control con los CSV provistos
 
-Estos resultados se calcularon directamente desde los CSV con Python estándar y aserciones; **no son ejecuciones de los módulos de consultas ni de MongoDB**. Corresponden a una carga sin extras ni modificaciones de Q13–Q15. Referencia temporal del control: **2026-11-10**; corte de Q05: **2026-09-11**.
+Estos resultados se calcularon inicialmente desde los CSV y luego se verificaron con MongoDB real. Corresponden a una carga sin extras ni modificaciones de Q13–Q15. Referencia temporal del control: **2026-11-10**; corte corregido de Q05: **2026-09-12**. Los conteos del dataset provisto no cambian con esta corrección.
 
 | Consulta | Resultado de control |
 |---|---|
@@ -133,11 +133,11 @@ Pipeline propuesto: `farmaceuticos → $match activo → $lookup ventas con filt
 
 Partir de los farmacéuticos asegura que el universo de salida incluya a todos los activos. Propuesta técnica: filtrar y contar dentro del ensamble de ventas y convertir la ausencia de coincidencias en cero. No descartar después del ensamble a quienes no tuvieron ventas, ni contar una fila vacía como si fuera una venta.
 
-Calcular una sola vez `hoy()` y usar la convención ya declarada: desde `hoy() - 60 días` inclusivo hasta mañana exclusivo, para incluir todo el día actual y excluir fechas futuras. Devolver `id_farmaceutico`, `nombre`, `apellido`, `matricula` y `cantidad_ventas`. Contar ventas, no ítems; las pendientes cuentan y las anuladas no.
+Calcular una sola vez `hoy()` y usar la convención corregida: desde `hoy() - 59 días` inclusivo hasta mañana exclusivo, para contar 60 fechas incluyendo hoy y excluir fechas futuras. Devolver `id_farmaceutico`, `nombre`, `apellido`, `matricula` y `cantidad_ventas`. Contar ventas, no ítems; las pendientes cuentan y las anuladas no.
 
 **Fundamento:** un ensamble externo izquierdo conserva el lado inicial; el conteo por grupo es distinto de sumar cantidades. P18 exige explícitamente conservar los ceros. La estrategia concreta de subpipeline y valor cero es una decisión de implementación basada en esos conceptos. [T14, p. 23; T15, p. 33; P18, p. 6]
 
-**Pruebas:** conteos de control con reloj fijado al 10/11/2026; `F007` con cero; `F004` inactivo excluido; pendiente incluida y anulada excluida; fecha exacta del corte, anterior al corte, hoy y mañana; una venta con varios ítems cuenta una sola vez.
+**Pruebas:** conteos de control con reloj fijado al 10/11/2026; `F007` con cero; `F004` inactivo excluido; pendiente incluida y anulada excluida; fecha exacta del corte, anterior al corte, hoy y mañana; una venta con varios ítems cuenta una sola vez. La regresión agrega una venta por día durante 61 fechas y exige contar exactamente 60.
 
 ### 6. Q11: vista mensual y consulta del mes actual
 
@@ -165,4 +165,4 @@ Integrar la creación o actualización de la definición de la vista al finaliza
 6. Documentar cada cruce entre colecciones, el desempate del ranking, la convención temporal y el diseño de la vista. Para cada consulta incluir enunciado, pipeline o filtro y al menos un ejemplo de resultado. [P18, pp. 6–7]
 7. Actualizar `entregas/avances-tpo.md` y ejecutar `./scripts/verificar-repo.sh` en la wiki. No modificar los motores elegidos, el modelo de las ventas, las escrituras ni el grafo para este alcance; no hacer commit ni push sin pedido explícito.
 
-**Criterio de terminado cumplido:** seis módulos ejecutables y documentados, vista preparada por la carga repetible, 16 pruebas de integración correctas en MongoDB `8.3.11`, ejemplos para el informe y estado actualizado. Se ejecutó además el cargador real y cada consulta con la fecha del sistema; los resultados coincidieron con los controles de esta página. No se añadieron dependencias ni índices. Los extras persistentes y los diagramas siguen siendo pendientes del grupo.
+**Criterio de terminado cumplido:** seis módulos ejecutables y documentados, vista preparada por la carga repetible, 17 pruebas de integración correctas en MongoDB `8.3.11`, ejemplos para el informe y estado actualizado. Se ejecutó además el cargador real y cada consulta con la fecha del sistema; los resultados coincidieron con los controles de esta página. No se añadieron dependencias ni índices. Los extras persistentes y los diagramas siguen siendo pendientes del grupo.

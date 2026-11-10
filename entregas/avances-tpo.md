@@ -2,13 +2,13 @@
 
 Fecha: 7 de noviembre de 2026.
 
-Última revisión: 10 de noviembre de 2026. Base del trabajo: `main` del repositorio del grupo, commit `383168c` (`feat: agregar el entorno, la carga y las consultas 13 a 15`). Las seis lecturas están publicadas en [feat/consultas-lectura-mongodb](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/tree/feat/consultas-lectura-mongodb), con seis commits por consulta y sus pruebas, más un commit de documentación. Último commit: `7a4fad5`. La documentación exterior se trabaja en `docs/consultas-lectura-mongodb`.
+Última revisión: 10 de noviembre de 2026. Base del trabajo: `main` del repositorio del grupo, commit `383168c` (`feat: agregar el entorno, la carga y las consultas 13 a 15`). Las seis lecturas están publicadas en [feat/consultas-lectura-mongodb](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/tree/feat/consultas-lectura-mongodb), con seis commits por consulta y sus pruebas, más un commit de documentación y el fix de Q05. Último commit: `11c9d1b`. La documentación exterior se trabaja en `docs/consultas-lectura-mongodb`.
 
-Esta parte cubre **Q01, Q05, Q07, Q08, Q09 y Q11**, todas implementadas sobre MongoDB y verificadas con el dataset completo. El plan, las decisiones y los controles están en [consultas-asignadas.md](consultas-asignadas.md); el material para el informe está en [informe-consultas-lectura.md](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/7a4fad5777ca2e77a12a866bd91e0b8351bec1c3/docs/informe-consultas-lectura.md).
+Esta parte cubre **Q01, Q05, Q07, Q08, Q09 y Q11**, todas implementadas sobre MongoDB y verificadas con el dataset completo. El plan, las decisiones y los controles están en [consultas-asignadas.md](consultas-asignadas.md); el material para el informe está en [informe-consultas-lectura.md](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/11c9d1b622b2c15a4f2ccc070cf1862ff02d129f/docs/informe-consultas-lectura.md).
 
 Se ejecutó el plan: Q09 con `find`; Q01 y Q08 con referencias resueltas por `$lookup`; Q07 con suma de unidades; Q05 conservando farmacéuticos con cero; Q11 mediante la vista `ingresos_mensuales_farmaceutico` y selección del mes actual con `hoy()`. Todas exponen `ejecutar() -> list[dict]`, sin argumentos.
 
-Verificación: MongoDB `8.3.11` real en el contenedor aislado `farmared-consultas-test`, puerto `127.0.0.1:27018`; Python `3.11`, PyMongo `4.15.3`. Pasaron el verificador de los nueve CSV y las 16 pruebas de integración en `tests/test_consultas.py`. Se ejecutaron también el cargador real y las seis consultas con la fecha del sistema (2026-11-10). No se tocó una base preexistente: las pruebas usan bases temporales propias y la ejecución manual usa `farmared` dentro del contenedor nuevo. Las ejecuciones del 7 de noviembre conservan su carácter histórico.
+Verificación: MongoDB `8.3.11` real en el contenedor aislado `farmared-consultas-test`, puerto `127.0.0.1:27018`; Python `3.11`, PyMongo `4.15.3`. Pasaron el verificador de los nueve CSV y las 17 pruebas de integración en `tests/test_consultas.py`. Se ejecutaron también el cargador real y las seis consultas con la fecha del sistema (2026-11-10). No se tocó una base preexistente: las pruebas usan bases temporales propias y la ejecución manual usa `farmared` dentro del contenedor nuevo. Las ejecuciones del 7 de noviembre conservan su carácter histórico.
 
 Los datasets provistos están ahora en `datasets/`, en la raíz de esta wiki. Los nueve archivos se compararon byte a byte con `entregas/tpo-farmared/datasets/` y son idénticos. El cargador sigue leyendo la copia interna del proyecto. En los apartados siguientes, `datasets/extra/` es relativo al repositorio del grupo.
 
@@ -27,6 +27,9 @@ Se verificó cada versión exacta antes de crear su commit, contra MongoDB real.
 | [1af1131](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/commit/1af11315a76900e289b7df5f9a301223c8c88ad4) | Q05 y sus pruebas |
 | [278db95](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/commit/278db95dad211e0fc085a03dd6cee859ce7c9dea) | Q11, preparación de su vista en la carga y sus pruebas |
 | [7a4fad5](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/commit/7a4fad5777ca2e77a12a866bd91e0b8351bec1c3) | Instrucciones, ejemplos para el informe y textos del listado de consultas |
+| [11c9d1b](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/commit/11c9d1b622b2c15a4f2ccc070cf1862ff02d129f) | Fix de Q05: 60 fechas incluyendo hoy; regresión con una venta por día durante 61 fechas; 17 pruebas correctas |
+
+La revisión del enunciado detectó que el rango original de Q05 incluía 61 fechas. Se corrigió a `hoy() - 59 días` inclusive hasta mañana exclusivo. El 2026-11-10 el corte es 2026-09-12; los conteos del dataset provisto no cambian. La corrección, su prueba y la documentación están en el mismo commit.
 
 ## Qué quedó hecho
 
