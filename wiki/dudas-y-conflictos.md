@@ -301,6 +301,9 @@ Referencias externas: [release notes oficiales de MySQL 9.7](https://dev.mysql.c
 
 ## TPO FarmaRed
 
+- Q12 pide «último año» sin definir la ventana exacta. [P18, p. 6]
+- **Decisión del proyecto (no atribuida a la cátedra):** 365 días incluyendo hoy, desde `hoy() - 364 días` inclusivo hasta mañana exclusivo; no un año calendario. Incluye ventas de cualquier estado y clientes inactivos. Se verificaron los límites y se documentó en [el informe de Q04/Q06/Q12](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/main/docs/informe-consultas-restantes.md).
+
 - La carátula fija grupos de 4 integrantes. El requisito del historial de commits pide evidenciar la participación de “los tres integrantes”. [P18, pp. 1, 7]
 - **Decisión:** conservar las dos cifras. No elegir una hasta que la cátedra lo aclare.
 - La consulta 15 dice «dada una venta registrada» y no nombra el cambio de estado. En esta parte se lee como el paso de Pendiente a Completada: `fecha` pasa al día de la entrega y la reserva queda en `fecha_registro`. La consigna llama domicilio a ciudad y provincia; el ABM las modifica como contacto. [P18, pp. 5–6]
