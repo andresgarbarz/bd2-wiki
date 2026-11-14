@@ -4,6 +4,8 @@ Revisión: 10 de noviembre de 2026. Base del trabajo: `main`, commit `383168c`, 
 
 Los CSV provistos se encuentran en [datasets/](../datasets/), en la raíz de esta wiki. Sus nueve archivos son idénticos byte a byte a `entregas/tpo-farmared/datasets/`; por eso los controles de esta página sirven para ambas copias. El cargador lee la carpeta interna del proyecto. Las rutas `src/`, `docs/` y `datasets/extra/` de este documento son relativas al repositorio del grupo.
 
+Actualización del 14 de noviembre de 2026: las seis lecturas de esta página y los PR de grafo y Q04/Q06/Q12 están integrados en `main`. La suite completa pasó 25 pruebas con los dos motores reales. La explicación y los resultados del 10 de noviembre se conservan como historial; el estado actual está en [avances-tpo.md](avances-tpo.md).
+
 ## Contexto para continuar
 
 La arquitectura decidió MongoDB para estas seis consultas. Mongo es la fuente de datos y Neo4j se reserva para Q02, Q03 y Q10. Las seis lecturas funcionan sin el grafo. Se actualizaron sus encabezados y los textos de `src/consultas/__init__.py` y `__main__.py`.
@@ -14,13 +16,13 @@ Estado comprobado por lectura del código:
 |---|---|
 | Entorno y dependencias | Compose, devcontainer Python 3.12, MongoDB `8.3.11`, Neo4j `5.26.32` y drivers fijados |
 | Carga | Ocho colecciones; los 22 detalles se embeben en `ventas.items`; valida referencias y totales; prepara la vista mensual de Q11 |
-| Q13, Q14 y Q15 | Implementadas; esta revisión no repite sus pruebas de ejecución |
+| Q13, Q14 y Q15 | Implementadas; la revisión de integración verifica proyección, FEFO y rechazo por falta de stock |
 | Q01, Q05, Q07, Q08, Q09, Q11 | Implementadas y verificadas con MongoDB real |
-| Q02, Q03, Q04, Q06, Q10, Q12 | Siguen en `NotImplementedError` |
-| Grafo | Cuatro funciones de proyección pendientes |
+| Q02, Q03, Q04, Q06, Q10, Q12 | Implementadas e integradas; Q02/Q03/Q10 en Neo4j, Q04/Q06/Q12 en MongoDB |
+| Grafo | Proyección completa e incremental implementadas; sucursal histórica conservada en la venta |
 | Datos adicionales | No existe `datasets/extra/`; falta cumplir los diez registros propios por colección/tabla exigidos [P18, pp. 1, 6] |
-| Informe | Existen los documentos de entorno/escrituras y de las seis lecturas; faltan diagramas y consolidar el informe final [P18, p. 7] |
-| Pruebas | Verificador de CSV y 17 pruebas de integración de las seis lecturas, con resultados y bordes |
+| Informe | Existen los documentos de entorno/escrituras y de las seis lecturas; falta el diagrama de colecciones y consolidar el informe PDF; el grafo ya tiene diagrama [P18, p. 7] |
+| Pruebas | Verificador de CSV y 25 pruebas de integración: 22 MongoDB y tres Neo4j |
 
 ## Qué pide cada consulta
 

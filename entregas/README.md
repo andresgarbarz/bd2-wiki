@@ -4,9 +4,9 @@ El trabajo obligatorio grupal es el TPO FarmaRed. La consigna oficial es [P18](.
 
 Los motores elegidos y las alternativas descartadas están en [decisiones-arquitectura.md](decisiones-arquitectura.md). Los avances para continuar el código están en [avances-tpo.md](avances-tpo.md). Las decisiones de entorno, carga y escrituras, para el informe, están en [decisiones-escrituras.md](decisiones-escrituras.md).
 
-Q01, Q05, Q07, Q08, Q09 y Q11 están implementadas y verificadas con MongoDB real. El código está publicado en la rama [feat/consultas-lectura-mongodb](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/tree/feat/consultas-lectura-mongodb), con un commit por consulta y sus pruebas, más uno de documentación y el fix posterior de Q05. La lectura de la consigna, el plan ejecutado, los casos de control y los pendientes están en [consultas-asignadas.md](consultas-asignadas.md). Los ejemplos para el informe están en [informe-consultas-lectura.md](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/11c9d1b622b2c15a4f2ccc070cf1862ff02d129f/docs/informe-consultas-lectura.md).
+Las quince consultas están implementadas e integradas en `main` del repositorio del grupo: Q02, Q03 y Q10 usan Neo4j; las demás, MongoDB. La revisión del 14 de noviembre de 2026 ejecutó 25 pruebas de integración contra ambos motores reales. Se resolvió el conflicto del cargador conservando la vista Q11 y la reconstrucción del grafo. El detalle está en [avances-tpo.md](avances-tpo.md).
 
-La documentación de esta wiki se mantiene en la rama `docs/consultas-lectura-mongodb` del repositorio exterior.
+Los ejemplos para el informe están en [lecturas MongoDB](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/main/docs/informe-consultas-lectura.md), [grafo](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/main/docs/informe-grafo.md) y [Q04/Q06/Q12](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/main/docs/informe-consultas-restantes.md). Faltan registros adicionales, el diagrama de colecciones y consolidar el informe PDF. [P18, pp. 1, 6–7]
 
 Los nueve CSV provistos están en [datasets/](../datasets/), en la raíz de esta wiki. Se verificó que son idénticos a los de `entregas/tpo-farmared/datasets/`, que es la carpeta que lee el cargador del proyecto. Los registros adicionales del grupo van en `entregas/tpo-farmared/datasets/extra/`.
 

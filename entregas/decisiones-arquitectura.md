@@ -2,7 +2,7 @@
 
 Fecha: 3 de noviembre de 2026.
 
-Los motores quedan cerrados. El 7 de noviembre se cerró el modelo de las colecciones y quedaron hechos el entorno, la carga y las consultas 13, 14 y 15. El 10 de noviembre se implementaron y verificaron Q01, Q05, Q07, Q08, Q09 y Q11. Para continuar el código, [avances-tpo.md](avances-tpo.md). Para redactar el informe de escrituras, [decisiones-escrituras.md](decisiones-escrituras.md), y para las seis lecturas, [informe-consultas-lectura.md](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/11c9d1b622b2c15a4f2ccc070cf1862ff02d129f/docs/informe-consultas-lectura.md). Las etiquetas del grafo siguen abiertas.
+Los motores quedan cerrados. El 7 de noviembre se cerró el modelo de las colecciones y quedaron hechos el entorno, la carga y las consultas 13, 14 y 15. El 10 de noviembre se implementaron y verificaron Q01, Q05, Q07, Q08, Q09 y Q11. Para continuar el código, [avances-tpo.md](avances-tpo.md). Para redactar el informe de escrituras, [decisiones-escrituras.md](decisiones-escrituras.md), y para las seis lecturas, [informe-consultas-lectura.md](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/11c9d1b622b2c15a4f2ccc070cf1862ff02d129f/docs/informe-consultas-lectura.md). El 14 de noviembre se integraron las quince consultas y el grafo en `main`, con 25 pruebas de integración correctas. El modelo y las etiquetas del grafo están en [informe-grafo.md](https://github.com/andresgarbarz/TPO_BD2_FarmaRed/blob/main/docs/informe-grafo.md).
 
 ## Decisión
 
@@ -93,9 +93,9 @@ Documentos, grafos, clave-valor y columnar cubren las cinco filas de la consigna
 
 ## Qué falta cerrar
 
-- Etiquetas, propiedades y tipos de relación del grafo. `reconstruir`, `upsert_cliente`, `upsert_venta` y `upsert_receta` ya están declaradas y vacías.
+- Diagrama de colecciones y consolidación del informe PDF. El diagrama del grafo ya está en `docs/informe-grafo.md`.
 - Registros adicionales: al menos diez por colección, con casos borde. La carga ya los toma de `datasets/extra/`.
-- Las consultas 2, 3, 4, 6, 10 y 12. Q01, Q05, Q07, Q08, Q09 y Q11 quedaron implementadas y verificadas el 10 de noviembre.
+- Las quince consultas ya están implementadas. Q02, Q03 y Q10 recorren el grafo; Q04, Q06 y Q12 se integraron con las otras lecturas MongoDB.
 
 ## Fuentes
 

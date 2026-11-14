@@ -80,4 +80,4 @@ Esta es la puerta de entrada al conocimiento curado. Cada afirmación importante
 | Neo4j: grafos de propiedad, Cypher, HA y Causal Clustering | T17, C06, P15 | Curado; HA y Raft conviven como arquitecturas distintas; CAP de T17 y T19 sin unificar |
 | Redis y clave-valor | T18, T19, P16, P16A | Curado; P16A no resuelve la guía; tabla IMDB recuperada de la página |
 | DynamoDB | T20, P17 | Curado; el servicio no recibe etiqueta CAP en T20; la guía visual clasifica al paper Dynamo |
-| TPO FarmaRed | P18 | Entorno, carga y Q13–Q15 hechos. Q01, Q05, Q07, Q08, Q09 y Q11 implementadas y verificadas en MongoDB real; ver [avances](../entregas/avances-tpo.md). Faltan grafo, Q02, Q03, Q04, Q06, Q10, Q12, extras e informe final. Grupos de 4 y “tres integrantes” sin resolver |
+| TPO FarmaRed | P18 | Q01–Q15 y grafo implementados e integrados en main; 25 pruebas con MongoDB y Neo4j reales; ver [avances](../entregas/avances-tpo.md). Faltan extras, diagrama de colecciones e informe PDF final. Grupos de 4 y “tres integrantes” sin resolver |
