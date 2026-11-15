@@ -41,15 +41,16 @@ El stock pide actualizaciones concurrentes, sin quedar negativo y en orden FEFO.
 
 Si el descuento de stock falla, no pueden quedar ni la venta ni la receta modificadas. Venta, receta y lotes comparten ese fracaso, así que comparten motor. [P18, pp. 6–7]
 
-El servicio hace esto, en este orden:
+Desde el 14 de noviembre el servicio confirma lotes, receta, contadores y venta en una transacción de MongoDB. El compose levanta un replica set de un nodo para que el motor la admita. Un rechazo o un error aborta todos los cambios. El detalle está en [decisiones-escrituras.md](decisiones-escrituras.md).
+
+El servicio hace esto:
 
 1. Valida en Mongo: cliente existente y activo; farmacéutico existente, activo y de una sucursal de tipo Farmacia; productos existentes y activos; y, si el producto es bajo receta, receta existente, vigente y del mismo cliente.
 2. Arma el plan FEFO sobre los lotes de la sucursal del farmacéutico. Saltea los vencidos. El stock no puede quedar negativo.
-3. Actualiza cada lote solo si las unidades alcanzan. Si un lote posterior no cumple, repone los que ya había descontado. En ese caso no escribe la venta ni toca la receta.
-4. Recién cuando todos los lotes entraron, graba la venta (el total sale de los ítems) y actualiza la receta: incrementa `dispensas_realizadas`, mueve `proxima_dispensa` o completa la receta, según las reglas de tratamiento prolongado, simple y archivada.
-5. Después proyecta la venta en Neo4j.
+3. Dentro de la transacción, baja cada lote solo si las unidades alcanzan, actualiza la receta y graba o completa la venta. El total sale de los ítems. La receta incrementa `dispensas_realizadas`, mueve `proxima_dispensa` o se completa, según sea tratamiento prolongado, simple o archivada.
+4. Después del commit, proyecta la venta y la receta en Neo4j.
 
-La atomicidad que enseña la cátedra es la de un documento. La secuencia de varios lotes queda en el servicio. Con el proceso vivo, un lote que no alcanza provoca la reposición de los anteriores. Si el proceso muere entre dos lotes, el primero puede quedar descontado sin una venta que lo explique. Esa limitación va al informe. Dos ventas simultáneas no dejan unidades negativas, porque cada lote solo baja si todavía tiene las unidades pedidas. [T14, pp. 3–8; P18, pp. 4–7]
+La atomicidad que enseña la cátedra es la de un documento. [T14, pp. 3–8] La transacción de varios documentos es la que usa esta entrega para que un corte a mitad de camino no deje un lote descontado sin venta. El nodo único no agrega tolerancia a la caída del servidor. Neo4j queda fuera de esa transacción. [P18, pp. 4–7]
 
 ### El caso que fija la decisión
 

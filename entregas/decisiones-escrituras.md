@@ -1,12 +1,12 @@
 # Decisiones de entorno, carga y escrituras
 
-Fecha: 7 de noviembre de 2026. Autor: Andrés Garbarz.
+Fecha: 7 de noviembre de 2026. Autor: Andrés Garbarz. La estrategia de las consultas 14 y 15 se actualizó el 14 de noviembre, con el merge del pull request de integridad.
 
 Sirve para redactar la parte del informe que cubre el entorno, la carga y las consultas 13, 14 y 15. La elección de MongoDB y Neo4j, y el descarte de SQL, Cassandra y Redis, ya están en [decisiones-arquitectura.md](decisiones-arquitectura.md). Los ejemplos de esta página se ejecutaron el 2026-11-07.
 
 ## Entorno
 
-MongoDB es `8.3.11`, la misma versión que el contenedor de las guías. Neo4j es `5.26.32`, el último parche de la serie 5.26 publicado en Docker Hub ese día: `5.26.33` no estaba. Los dos van sin autenticación y publican los puertos solo en `127.0.0.1`. `pymongo` queda en `4.15.3` y el driver `neo4j` en `5.28.1`.
+MongoDB es `8.3.11`, la misma versión que el contenedor de las guías. Desde el 14 de noviembre corre como replica set `rs0` de un nodo: el compose lo inicia y espera a que sea primario. Ese nodo único no agrega réplicas ni tolerancia a la caída del servidor. Sirve para confirmar varios documentos en una transacción. Neo4j es `5.26.32`, el último parche de la serie 5.26 publicado en Docker Hub el 7 de noviembre: `5.26.33` no estaba. Los dos van sin autenticación y publican los puertos solo en `127.0.0.1`. `pymongo` queda en `4.15.3` y el driver `neo4j` en `5.28.1`.
 
 El compose fija `GLIBC_TUNABLES=glibc.pthread.rseq=1`. La imagen de Mongo trae `rseq=0`. En kernels 6.19 a 7.0.13, como el de Docker Desktop para Mac, el proceso se corta al iniciar si glibc también usa rseq. Con `rseq=1`, glibc se queda el registro, TCMalloc no lo usa y Mongo arranca. El log muestra un aviso de rendimiento: es el efecto esperado y con estos datos no importa. En Codespaces, con kernel 6.8, arranca igual sin la variable. Queda fija para que el mismo archivo sirva en todas las máquinas. Esta variable va entre las limitaciones del informe.
 
@@ -89,12 +89,10 @@ El 2026-11-07, con carga recién hecha:
 
 Si el descuento de stock falla, no pueden quedar una venta ni una receta modificadas. [P18, p. 7]
 
-El plan FEFO lee lotes con vencimiento mayor o igual a `hoy()`, ordenados por `{vencimiento: 1, _id: 1}`. El `sort` de MongoDB no es estable, y `_id` es el id del lote, así que dos lotes que vencen el mismo día salen siempre en el mismo orden. Si el plan no alcanza, se rechaza antes de escribir. Si alcanza, cada lote baja con la condición de que `unidades` alcance. Si un lote ya no alcanza, se reponen los anteriores y se rechaza. Dos ventas simultáneas no dejan unidades negativas por esa condición.
+El plan FEFO lee lotes con vencimiento mayor o igual a `hoy()`, ordenados por `{vencimiento: 1, _id: 1}`. El `sort` de MongoDB no es estable, y `_id` es el id del lote, así que dos lotes que vencen el mismo día salen siempre en el mismo orden. Si dos ítems piden el mismo producto, el plan descuenta en memoria lo ya asignado para no usar dos veces las mismas unidades. El día de vencimiento todavía se vende.
 
-La receta se actualiza si `dispensas_realizadas` sigue valiendo lo que se leyó. En un tratamiento prolongado, mientras queden dispensas, la próxima es la fecha de la dispensa más 30 días. Al llegar a las autorizadas pasa a Completada y la próxima queda vacía. Una receta simple o archivada se completa en esa dispensa. [P18, p. 5] Si la condición no coincide, se reponen los lotes y no se graba ni se completa la venta.
+La 14 y la 15 confirman lotes, receta, contadores y venta en una transacción de MongoDB. La cátedra enseña la atomicidad de un documento. [T14, pp. 3–8] La transacción de varios documentos es la estrategia elegida para la integración, y el replica set de un nodo es lo que el motor pide para ofrecerla. Un rechazo o un error aborta todos los cambios. Un conflicto transitorio reintenta la transacción completa. La 15 lee y completa la venta dentro de esa transacción, con la condición `estado: "Pendiente"`, así que dos llamadas a la vez consumen una sola dispensa y una sola unidad. La receta se actualiza si `dispensas_realizadas` sigue valiendo lo que se leyó. En un tratamiento prolongado, mientras queden dispensas, la próxima es la fecha de la dispensa más 30 días. Al llegar a las autorizadas pasa a Completada y la próxima queda vacía. Una receta simple o archivada se completa en esa dispensa. [P18, p. 5]
 
-La 14 inserta después del descuento y de la receta. La 15 pasa a Completada con la condición `estado: "Pendiente"`. Una segunda llamada no encuentra la venta, así que no vuelve a descontar. No hay un campo `stock_descontado`: el estado cumple esa función. Si la condición no coincide, se reponen los lotes y la receta.
+Los id `C`, `V` y `D` salen de contadores atómicos que inicializa la carga. La 13 cambia la cobertura solo si sigue siendo la que validó. Hay índices únicos sobre el DNI y la matrícula.
 
-No se usan transacciones de varios documentos. En MongoDB esas transacciones piden un replica set, y este entorno es una sola instancia. La atomicidad que enseña la cátedra es la de un documento. [T14, pp. 3–8] La estrategia es el orden de las operaciones, la actualización condicional y la reposición. Si el proceso muere entre dos lotes, el primero puede quedar descontado sin una venta que lo explique. Esa ventana va al informe.
-
-Si el grafo falla, Mongo ya confirmó. La consulta no devuelve error: avisa que el grafo quedó pendiente y `reconstruir()` lo rehace. Las cuatro funciones están vacías, así que los casos que entran muestran ese aviso.
+Neo4j se actualiza después del commit. Cada escritura incrementa `_version` y marca `grafo_pendiente`. Una proyección anterior a la versión actual no pisa el nodo. Si la proyección falla, Mongo ya quedó confirmado y la respuesta de la 13, la 14 o la 15 avisa que el grafo quedó pendiente. Las consultas 2, 3 y 10 no leen ese grafo atrasado: piden `reconstruir()`. El replica set de un nodo no cubre la caída del servidor.
