@@ -19,3 +19,5 @@ material/extraido/B[0-9]*.txt
 
 # Repositorio Git propio del TPO. No mezclarlo con la wiki.
 entregas/tpo-farmared/
+entregas/tpo-farmared/TPO_BD2_FarmaRed/
+entregas/TPO_BD2_FarmaRed/
